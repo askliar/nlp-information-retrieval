@@ -1,0 +1,9 @@
+data/data_loader.ipynb filter=lfs diff=lfs merge=lfs -text
+data/train_data_easy_bow.csv filter=lfs diff=lfs merge=lfs -text
+data/train_data_hard_bow.csv filter=lfs diff=lfs merge=lfs -text
+data/val_data_easy_bow.csv filter=lfs diff=lfs merge=lfs -text
+data/val_data_hard_bow.csv filter=lfs diff=lfs merge=lfs -text
+data/img_data filter=lfs diff=lfs merge=lfs -text
+data/test_data_easy_bow.csv filter=lfs diff=lfs merge=lfs -text
+data/test_data_hard_bow.csv filter=lfs diff=lfs merge=lfs -text
+data/text_data filter=lfs diff=lfs merge=lfs -text
