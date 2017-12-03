@@ -8,7 +8,7 @@ class CBOW(nn.Module):
         super(CBOW, self).__init__()
         self.embeddings = nn.Embedding(vocab_size, embedding_dim)
         self.linear1 = nn.Linear(embedding_dim + img_feat_size, output_dim)
-d         self.linear2 = nn.Linear(output_dim, 1)
+        self.linear2 = nn.Linear(output_dim, 1)
 
     def forward(self, input_text, input_img_feat):
         x = self.embeddings(input_text)
