@@ -1,0 +1,56 @@
+Timer unit: 1e-06 s
+
+Total time: 7.94331 s
+File: clean_model.py
+Function: train at line 404
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   404                                           @profile
+   405                                           def train(model, loader, epochs=3):
+   406         3            8      2.7      0.0      for e in range(epochs):
+   407         2            5      2.5      0.0          start = time.time()
+   408         2      1635997 817998.5     20.6          train_loss = torch.zeros(1).cuda()
+   409        56       759421  13561.1      9.6          for batch in loader:
+   410        54          457      8.5      0.0              text, img_feat, target, sizes = Variable(batch['text']),\
+   411        54          164      3.0      0.0                                              Variable(batch['img_feat']),\
+   412        54          108      2.0      0.0                                              Variable(batch['target']),\
+   413        54          750     13.9      0.0                                              Variable(batch['size'])
+   414        54      4593344  85061.9     57.8              torch.cuda.synchronize()
+   415        54          136      2.5      0.0              if CUDA:
+   416        54        27112    502.1      0.3                  text, img_feat, target, sizes = text.cuda(),\
+   417        54       469657   8697.4      5.9                                                  img_feat.cuda(),\
+   418        54         6114    113.2      0.1                                                  target.cuda(),\
+   419        54         4023     74.5      0.1                                                  sizes.cuda()
+   420                                                       # torch.cuda.synchronize()
+   421        54        71699   1327.8      0.9              model.cuda()
+   422                                                       # torch.cuda.synchronize()
+   423        54       290278   5375.5      3.7              text_prediction = model(text)
+   424                                                       # torch.cuda.synchronize()
+   425                                                       # print('before pairwise')
+   426        54        15429    285.7      0.2              distances = F.pairwise_distance(text_prediction, img_feat)
+   427                                                       # print('after pairwise')
+   428                                                       # torch.cuda.synchronize()
+   429                                                       # loss = distances.sum()
+   430                                                       # print('after loss')
+   431                                                       # torch.cuda.synchronize()
+   432                                                       # train_loss += loss.data
+   433                                                       # print('before backward')
+   434                                                       # torch.cuda.synchronize()
+   435                                                       # loss.backward()
+   436                                                       # print('before optim')
+   437                                                       # torch.cuda.synchronize()
+   438                                                       # optimizer.step()
+   439                                                       # print('after optim')
+   440                                                       # torch.cuda.synchronize()
+   441                                           
+   442                                                       # print(text.size())
+   443                                                       # print(img_feat.size())
+   444                                                       # print(target.size())
+   445                                                       # print(sizes.size())
+   446                                                       #
+   447                                                       # print(target)
+   448                                                       # print(sizes)
+   449         2        68515  34257.5      0.9          print(train_loss.cpu().numpy()[0])
+   450         2           92     46.0      0.0          print(time.time() - start)
+
