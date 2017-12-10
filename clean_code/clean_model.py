@@ -20,9 +20,9 @@ CUDA = torch.cuda.is_available()
 
 torch.manual_seed(1)
 
-captions_batch_size = 1512
+captions_batch_size = 512
 questions_batch_size = 512
-
+torch.manual_seed(42)
 img_data = '../data/img_data'
 text_data = '../data/text_data'
 complexity = 'easy'
@@ -112,7 +112,7 @@ class GenericDataSet(Dataset):
         h5_id = self.visual_feat_mapping[str(img_id)]
         img_feat = torch.FloatTensor(self.img_features[h5_id])
 
-        sample = {'text': text_tensor, 'img_id': img_feat, 'target': target, 'size': text_size}
+        sample = {'text': text_tensor, 'img_feat': img_feat, 'target': target, 'size': text_size}
         # sample = (text_tensor, img_feat, target)
         return sample
 
@@ -223,10 +223,11 @@ class TestDataSet(GenericDataSet):
         text_int = pad_text(question_int + [caption_int])
         img_id = row.img_list
         target = [row.target]
-        target = torch.FloatTensor(target)
-        text_tensor = torch.LongTensor(text_int)
-        text_size = torch.LongTensor([text_tensor.size(0)])
-        return (text_tensor, img_id, target, text_size)
+        if len(text_int) > 0:
+            target = torch.FloatTensor(target)
+            text_tensor = torch.LongTensor(text_int)
+            text_size = torch.LongTensor([text_tensor.size(0)])
+            return (text_tensor, img_id, target, text_size)
 
     def convert_caption_to_int(self, text, stem, stopwords, stop_vocab):
         caption_preprocessed = self.preprocess_text(text, stem, stopwords, stop_vocab)
@@ -262,7 +263,7 @@ class TestDataSet(GenericDataSet):
         text_tensor, imgids, target, text_size = self.data[idx]
         imgs = torch.stack(self.imgids2imgs(imgids))
 
-        sample = {'text': text_tensor, 'img_id': imgs, 'target': target, 'size': text_size}
+        sample = {'text': text_tensor, 'img_feat': imgs, 'target': target, 'size': text_size}
         # sample = (text_tensor, imgs, target)
         return sample
 
@@ -295,6 +296,12 @@ def pad_dict(data):
 
     return data
 
+def pad_text_minbatches(texts, max_size):
+    for idx, text in enumerate(texts):
+        padding = torch.zeros((max_size - text.size(0), text.size(1))).long()
+        texts[idx] = torch.cat((text, padding), 0)
+    return texts
+
 
 def train_c_fn(batch):
     batch = pad_dict(batch)
@@ -302,9 +309,10 @@ def train_c_fn(batch):
     img_ids = []
     targets = []
     sizes = []
+    max_size = 0
     for sample in batch:
         text_tensor = sample['text']
-        img_id = sample['img_id']
+        img_id = sample['img_feat']
         target = sample['target']
         size = sample['size']
         if len(text_tensor.size()) == 1:
@@ -313,10 +321,14 @@ def train_c_fn(batch):
         img_ids.append(img_id)
         targets.append(target)
         sizes.append(size)
+        max_size = max(max_size, torch.max(size))
+    # COMMENT FOR OLD
+    # texts = pad_text_minbatches(texts, max_size)
     text_tensor = torch.cat(texts, 0)
     img_id = torch.stack(img_ids, 0)
     target = torch.cat(targets, 0)
     size = torch.cat(sizes, 0)
+
     return {'text': text_tensor, 'img_feat': img_id, 'target': target, 'size': size}
 
 def c_fn(batch):
@@ -325,15 +337,19 @@ def c_fn(batch):
     img_ids = []
     targets = []
     sizes = []
+    max_size = 0
     for sample in batch:
         text_tensor = sample['text']
-        img_id = sample['img_id']
+        img_id = sample['img_feat']
         target = sample['target']
         size = sample['size']
         texts.append(text_tensor)
         img_ids.append(img_id)
         targets.append(target)
         sizes.append(size)
+        max_size = max(max_size, torch.max(size))
+    #COMMENT FOR OLD
+    # texts = pad_text_minbatches(texts, max_size)
     text_tensor = torch.cat(texts, 0)
     img_id = torch.cat(img_ids, 0)
     target = torch.cat(targets, 0)
@@ -398,67 +414,149 @@ dataloader_test = DataLoader(data_test_questions, batch_size=questions_batch_siz
 #     else:
 #         i += 1
 #         print(batch)
-#     text = batch.text
 
 import time
+losslist = []
+
+
+
+try:
+    import gpustat
+except ImportError:
+    raise ImportError("pip install gpustat")
+
+
+def show_memusage(device=0):
+    gpu_stats = gpustat.GPUStatCollection.new_query()
+    item = gpu_stats.jsonify()["gpus"][device]
+    print("{}/{}".format(item["memory.used"], item["memory.total"]))
+
+
+device = 0
+
 # @profile
 def train(model, loader, epochs=3):
     for e in range(epochs):
+
         start = time.time()
-        train_loss = torch.zeros(1).cuda()
+        if CUDA:
+            train_loss = torch.zeros(1).cuda()
+        i = 0
+        if CUDA:
+            model.cuda()
         for batch in loader:
+            startb = time.time()
+            # torch.cuda.synchronize()
+            # if i > 10:
+            #     break
+            i += 1
             text, img_feat, target, sizes = Variable(batch['text']),\
                                             Variable(batch['img_feat']),\
                                             Variable(batch['target']),\
                                             Variable(batch['size'])
-            torch.cuda.synchronize()
+            # torch.cuda.synchronize()
             if CUDA:
                 text, img_feat, target, sizes = text.cuda(),\
                                                 img_feat.cuda(),\
                                                 target.cuda(),\
                                                 sizes.cuda()
-            # torch.cuda.synchronize()
-            model.cuda()
-            # torch.cuda.synchronize()
+
+            optimizer.zero_grad()
+            print(text.size())
+            if text.size(1) > 25:
+                continue
+            show_memusage(device=device)
+
             text_prediction = model(text)
-            # torch.cuda.synchronize()
-            # print('before pairwise')
-            distances = F.pairwise_distance(text_prediction, img_feat)
+            # distances = F.pairwise_distance(text_prediction, img_feat)
             # xp = -2 * torch.mm(text_prediction, img_feat.t())
             # xp += torch.sum(text_prediction * text_prediction, 1).expand(xp.t().size()).t()
             # xp += torch.sum(img_feat * img_feat, 1).expand(xp.size())
-            # print('after pairwise')
-            # torch.cuda.synchronize()
-            loss = distances.sum()
-            # print('after loss')
-            # torch.cuda.synchronize()
-            train_loss += loss.data
-            # print('before backward')
-            # torch.cuda.synchronize()
-            loss.backward()
-            # print('before optim')
-            # torch.cuda.synchronize()
+
+            total_idx = 0
+            # exp1 = img_feat[0].view(1, -1).expand(sizes.data[0], 2048)
+            startl = time.time()
+
+            # use gather instead of creating the exp1 vector
+            # for i, size in enumerate(sizes.data):
+
+                # name += F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
+                #                                   img_feat[i].view(1, -1).expand(size, 2048)).sum()
+
+                # loss += torch.sqrt(xp[total_idx:total_idx+size, i]).sum()
+                # exp1 = torch.cat((exp1, img_feat[i].view(1, -1).expand(size, 2048)), 0)
+                # total_idx += size
+            idx = [j for j in range(sizes.size(0)) for i in range(sizes.data[j])]
+
+            print('loop',time.time() - startl)
+
+
+            startloss = time.time()
+            loss3 = F.pairwise_distance(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
+            # loss3 = F.cosine_similarity(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
+
+            train_loss += loss3.data[0]
+            loss3.backward()
             optimizer.step()
-            # print('after optim')
-            # torch.cuda.synchronize()
 
-            # print(text.size())
-            # print(img_feat.size())
-            # print(target.size())
-            # print(sizes.size())
-            #
-            # print(target)
-            # print(sizes)
-        print(train_loss.cpu().numpy()[0])
+            del loss3, text, img_feat, target, sizes, text_prediction, idx
+            print(time.time() - startb)
+        # if e < 5:
+        #     for param_group in optimizer.param_groups:
+        #         param_group['lr'] += 0.000004
+        #         print(param_group['lr'])
+                # param_group['lr'] *= lr_decay
+
+        # losslist.append(train_loss)
+        print(train_loss)
         print(time.time() - start)
-def test(model):
-    pass
+
+def test(model, loader):
+    start = time.time()
+    if CUDA:
+        test_loss = torch.zeros(1).cuda()
+    i = 0
+
+    for batch in loader:
+
+        i += 1
+        text, img_feat, target, sizes = Variable(batch['text']),\
+                                        Variable(batch['img_feat']),\
+                                        Variable(batch['target']),\
+                                        Variable(batch['size'])
+        # torch.cuda.synchronize()
+        if CUDA:
+            text, img_feat, target, sizes = text.cuda(),\
+                                            img_feat.cuda(),\
+                                            target.cuda(),\
+                                            sizes.cuda()
+
+        # optimizer.zero_grad()
+        print(text.size())
+        if text.size(1) > 25:
+            continue
+        show_memusage(device=device)
+
+        text_prediction = model(text)
+
+
+        idx = [j for j in range(sizes.size(0)) for i in range(sizes.data[j])]
+
+
+
+        startloss = time.time()
+        loss3 = F.pairwise_distance(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
+
+    print(test_loss)
+    print(time.time() - start)
 model = CBOW(vocab_size=len(w2i),img_feat_size=2048)
-optimizer = optim.Adam(model.parameters(), lr=0.000001)
+optimizer = optim.Adam(model.parameters(), lr=0.000005)
 
-train(model, dataloader_train_captions, 2)
-
-
+train(model, dataloader_train_questions, 20)
+# test(model, data_test_questions)
+import matplotlib.pyplot as plt
+plt.plot(losslist)
+plt.show()
 # def glvq_costfun(self, x, batch_labels):
 #     xp = -2 * torch.mm(x, self.prototypes.t())
 #     xp += torch.sum(x * x, 1).expand(xp.t().size()).t()
@@ -475,99 +573,3 @@ train(model, dataloader_train_captions, 2)
 #     d2s, arg_d2s = torch.min(xp2, 1)
 #     res = torch.sum((d1s - d2s) / (d1s + d2s))
 #     return res, arg_d1s
-# class TestDataSet(Dataset):
-#     def __init__(self, json_file, pickle_file, img_features, visual_feat_mapping,
-#                  mean, std, vocab, stem=False, stopwords=False, stop_vocab = None,
-#                  normalize=True, debug=False):
-#         retrieve = os.path.isfile(pickle_file)
-#         self.img_features = img_features
-#         self.visual_feat_mapping = visual_feat_mapping
-#         self.mean = mean
-#         self.std = std
-#         self.vocab = vocab
-#         self.stem = stem
-#         self.stopwords = stopwords
-#         if stopwords:
-#             self.stop_vocab = stop_vocab
-#
-#         if retrieve:
-#             self.data = pickle.load(open(pickle_file, 'rb'))
-#         else:
-#             df = pd.read_json(json_file).T.sort_index()
-#
-#             if debug:
-#                 df = df.head(5)
-#
-#             self.data = self.preprocess_data(df)
-#
-#             if not debug:
-#                 pickle.dump(self.data, open(pickle_file, 'wb'))
-#
-#     def preprocess_data(self, df):
-#         data_storage = []
-#         for row in df.itertuples():
-#             caption = row.caption
-#             dialog = row.dialog
-#             imgids = row.img_list
-#             target = row.target
-#             resulting_dialog = self.questions2int(dialog, self.vocab)
-#             resulting_caption = self.caption2int(caption, self.vocab)
-#             text_tensor = torch.FloatTensor(pad_text([resulting_caption] + resulting_dialog))
-#             target = torch.FloatTensor(target)
-#             data_storage.append((text_tensor, imgids, target))
-#         return data_storage
-#
-#     def __len__(self):
-#         return len(self.data)
-#
-#     def __getitem__(self, idx):
-#         row = self.data[idx]
-#         text_tensor, imgids, target = row
-#         imgs = torch.FloatTensor(self.imgids2imgs(imgids))
-#         return (text_tensor, imgs, target)
-#
-#     def caption2int(self, caption, vocab):
-#         if stopwords:
-#             processed_caption = tuple([(lambda x: stemmer.stem(x) if self.stem else x)(word)
-#                                        for word in word_tokenize(caption.lower())
-#                                        if word not in self.stop_vocab]
-#                                       )
-#         else:
-#             processed_caption = tuple([(lambda x: stemmer.stem(x) if self.stem else x)(word)
-#                                        for word in word_tokenize(caption.lower())])
-#
-#         processed_caption = text2int(processed_caption, vocab)
-#         return processed_caption
-#
-#     def questions2int(self, questions, vocab):
-#         max_len = 0
-#         questions = [sentence for sentences in questions for sentence in sentences]
-#         questions_int = []
-#         for question in questions:
-#             answer = question.split('?')[1].strip().lower()
-#             is_binary = answer == 'yes' or answer == 'no'
-#             if is_binary:
-#                 # processed_question = tuple([(lambda x: stemmer.stem(x) if self.stem else x)(word)
-#                 #                                                         for word in word_tokenize(question.lower())
-#                 #                                                         if not stopwords or word not in self.stop_vocab]
-#                 #                                                        )
-#                 if stopwords:
-#                     processed_question = tuple([(lambda x: stemmer.stem(x) if self.stem else x)(word)
-#                                             for word in word_tokenize(question.lower())
-#                                             if word not in self.stop_vocab]
-#                                            )
-#                 else:
-#                     processed_question = tuple([(lambda x: stemmer.stem(x) if self.stem else x)(word)
-#                                                 for word in word_tokenize(question.lower())])
-#                 question_int = text2int(processed_question, vocab)
-#                 questions_int.append(question_int)
-#         return pad_text(questions_int)
-#
-#     def imgids2imgs(self, img_id_arr):
-#         imgs = []
-#         for img_id in img_id_arr:
-#             h5id = self.visual_feat_mapping[str(img_id)]
-#             img = self.img_features[h5id]
-#             img = (img - self.mean) / self.std
-#             imgs.append(img)
-#         return imgs
