@@ -15,6 +15,8 @@ from torch.utils.data import Dataset, DataLoader
 import torch.nn.functional as F
 from torch.autograd import Variable
 import torch.optim as optim
+import time
+
 DEBUG = False
 CUDA = torch.cuda.is_available()
 
@@ -302,7 +304,6 @@ def pad_text_minbatches(texts, max_size):
         texts[idx] = torch.cat((text, padding), 0)
     return texts
 
-
 def train_c_fn(batch):
     batch = pad_dict(batch)
     texts = []
@@ -355,6 +356,19 @@ def c_fn(batch):
     target = torch.cat(targets, 0)
     size = torch.cat(sizes, 0)
     return {'text': text_tensor, 'img_feat': img_id, 'target': target, 'size': size}
+
+
+if CUDA:
+    try:
+        import gpustat
+    except ImportError:
+        raise ImportError("pip install gpustat")
+
+
+    def show_memusage(device=0):
+        gpu_stats = gpustat.GPUStatCollection.new_query()
+        item = gpu_stats.jsonify()["gpus"][device]
+        print("{}/{}".format(item["memory.used"], item["memory.total"]))
 
 
 # load data
@@ -415,27 +429,15 @@ dataloader_test = DataLoader(data_test_questions, batch_size=questions_batch_siz
 #         i += 1
 #         print(batch)
 
-import time
+
 losslist = []
-
-
-
-try:
-    import gpustat
-except ImportError:
-    raise ImportError("pip install gpustat")
-
-
-def show_memusage(device=0):
-    gpu_stats = gpustat.GPUStatCollection.new_query()
-    item = gpu_stats.jsonify()["gpus"][device]
-    print("{}/{}".format(item["memory.used"], item["memory.total"]))
 
 
 device = 0
 
 # @profile
 def train(model, loader, epochs=3):
+    model.train()
     for e in range(epochs):
 
         start = time.time()
@@ -465,7 +467,7 @@ def train(model, loader, epochs=3):
             print(text.size())
             if text.size(1) > 25:
                 continue
-            show_memusage(device=device)
+            # show_memusage(device=device)
 
             text_prediction = model(text)
             # distances = F.pairwise_distance(text_prediction, img_feat)
@@ -492,7 +494,7 @@ def train(model, loader, epochs=3):
 
 
             startloss = time.time()
-            loss3 = F.pairwise_distance(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
+            loss3 = F.pairwise_distance(text_prediction, img_feat[torch.LongTensor(idx)]).sum()
             # loss3 = F.cosine_similarity(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
 
             train_loss += loss3.data[0]
@@ -513,13 +515,17 @@ def train(model, loader, epochs=3):
 
 def test(model, loader):
     start = time.time()
+    model.eval()
     if CUDA:
         test_loss = torch.zeros(1).cuda()
-    i = 0
-
+    n = 0
+    test_loss = 0
+    top1 = 0
+    top3 = 0
+    top5 = 0
     for batch in loader:
 
-        i += 1
+        n += 1
         text, img_feat, target, sizes = Variable(batch['text']),\
                                         Variable(batch['img_feat']),\
                                         Variable(batch['target']),\
@@ -530,30 +536,42 @@ def test(model, loader):
                                             img_feat.cuda(),\
                                             target.cuda(),\
                                             sizes.cuda()
-
+        text.requires_grad = False
+        img_feat.requires_grad = False
         # optimizer.zero_grad()
-        print(text.size())
-        if text.size(1) > 25:
-            continue
-        show_memusage(device=device)
-
         text_prediction = model(text)
+        total_idx = 0
+        predictions = []
+        for i, size in enumerate(sizes.data):
+            scores = torch.zeros(10)
+            for k in range(10):
+                dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
+                                                  img_feat[i+k].view(1, -1).expand(size, 2048)).sum()
+                scores[k] = torch.mean(dist).data[0]
+            top1 += 1 if target.data[0] in scores.topk(1)[1].data else 0
+            top3 += 1 if target.data[0] in scores.topk(3)[1].data else 0
+            top5 += 1 if target.data[0] in scores.topk(5)[1].data else 0
+            predictions.append(scores)
+            print('we')
 
 
-        idx = [j for j in range(sizes.size(0)) for i in range(sizes.data[j])]
+            total_idx += size
 
+        # text.requires_grad = True
+        # img_feat.requires_grad = True
 
-
-        startloss = time.time()
-        loss3 = F.pairwise_distance(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
-
+    top1 /= total_idx
+    top3 /= total_idx
+    top5 /= total_idx
+    print(top1, top3, top5)
     print(test_loss)
     print(time.time() - start)
+
 model = CBOW(vocab_size=len(w2i),img_feat_size=2048)
 optimizer = optim.Adam(model.parameters(), lr=0.000005)
 
-train(model, dataloader_train_questions, 20)
-# test(model, data_test_questions)
+# train(model, dataloader_train_questions, 20)
+test(model, data_test_questions)
 import matplotlib.pyplot as plt
 plt.plot(losslist)
 plt.show()
