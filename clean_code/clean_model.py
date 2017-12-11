@@ -443,15 +443,15 @@ def train(model, loader, epochs=3):
         start = time.time()
         if CUDA:
             train_loss = torch.zeros(1).cuda()
-        i = 0
+        j = 0
         if CUDA:
             model.cuda()
         for batch in loader:
             startb = time.time()
             # torch.cuda.synchronize()
-            # if i > 10:
-            #     break
-            i += 1
+            if j > 10:
+                break
+            j += 1
             text, img_feat, target, sizes = Variable(batch['text']),\
                                             Variable(batch['img_feat']),\
                                             Variable(batch['target']),\
@@ -471,37 +471,37 @@ def train(model, loader, epochs=3):
 
             text_prediction = model(text)
             # distances = F.pairwise_distance(text_prediction, img_feat)
-            # xp = -2 * torch.mm(text_prediction, img_feat.t())
-            # xp += torch.sum(text_prediction * text_prediction, 1).expand(xp.t().size()).t()
-            # xp += torch.sum(img_feat * img_feat, 1).expand(xp.size())
+            xp = -2 * torch.mm(text_prediction, img_feat.t())
+            xp += torch.sum(text_prediction * text_prediction, 1).expand(xp.t().size()).t()
+            xp += torch.sum(img_feat * img_feat, 1).expand(xp.size())
 
             total_idx = 0
             # exp1 = img_feat[0].view(1, -1).expand(sizes.data[0], 2048)
             startl = time.time()
-
+            name = torch.zeros(1)
+            loss = torch.zeros(1)
             # use gather instead of creating the exp1 vector
-            # for i, size in enumerate(sizes.data):
+            for i, size in enumerate(sizes.data):
+                #
+                name += torch.sum(F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
+                                                  img_feat[i].view(1, -1).expand(size, 2048))).data[0]
 
-                # name += F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
-                #                                   img_feat[i].view(1, -1).expand(size, 2048)).sum()
-
-                # loss += torch.sqrt(xp[total_idx:total_idx+size, i]).sum()
+                loss += torch.sqrt(xp[total_idx:total_idx+size, i]).sum().data[0]
                 # exp1 = torch.cat((exp1, img_feat[i].view(1, -1).expand(size, 2048)), 0)
                 # total_idx += size
-            idx = [j for j in range(sizes.size(0)) for i in range(sizes.data[j])]
-
-            print('loop',time.time() - startl)
+            idx = [j for j in range(sizes.size(0)) for kk in range(sizes.data[j])]
 
 
-            startloss = time.time()
+
             loss3 = F.pairwise_distance(text_prediction, img_feat[torch.LongTensor(idx)]).sum()
             # loss3 = F.cosine_similarity(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
+            print('loop', loss.data[0], name.data[0], loss3.data[0], time.time() - startl)
 
             train_loss += loss3.data[0]
             loss3.backward()
             optimizer.step()
 
-            del loss3, text, img_feat, target, sizes, text_prediction, idx
+            # del loss3, text, img_feat, target, sizes, text_prediction, idx
             print(time.time() - startb)
         # if e < 5:
         #     for param_group in optimizer.param_groups:
@@ -518,14 +518,12 @@ def test(model, loader):
     model.eval()
     if CUDA:
         test_loss = torch.zeros(1).cuda()
-    n = 0
     test_loss = 0
     top1 = 0
     top3 = 0
     top5 = 0
-    for batch in loader:
+    for j, batch in enumerate(loader):
 
-        n += 1
         text, img_feat, target, sizes = Variable(batch['text']),\
                                         Variable(batch['img_feat']),\
                                         Variable(batch['target']),\
@@ -546,9 +544,9 @@ def test(model, loader):
             scores = torch.zeros(10)
             for k in range(10):
                 dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
-                                                  img_feat[i+k].view(1, -1).expand(size, 2048)).sum()
-                dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
-                                           img_feat[i + k].view(1, -1).expand(size, 2048)).sum()
+                                                img_feat[i + k].view(1, -1).expand(size, 2048)).sum()
+                # dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
+                #                                 img_feat[i + k].view(1, -1).expand(size, 2048)).sum()
                 scores[k] = torch.mean(dist).data[0]
             test_loss += scores[target.data[0]]
             top1 += 1 if target.data[0] in scores.topk(1)[1] else 0
@@ -571,7 +569,7 @@ def test(model, loader):
 model = CBOW(vocab_size=len(w2i),img_feat_size=2048)
 optimizer = optim.Adam(model.parameters(), lr=0.000005)
 
-# train(model, dataloader_train_questions, 20)
+train(model, dataloader_train_questions, 20)
 test(model, data_test_questions)
 import matplotlib.pyplot as plt
 plt.plot(losslist)
