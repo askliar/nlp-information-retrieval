@@ -226,7 +226,7 @@ class TestDataSet(GenericDataSet):
         img_id = row.img_list
         target = [row.target]
         if len(text_int) > 0:
-            target = torch.FloatTensor(target)
+            target = torch.LongTensor(target)
             text_tensor = torch.LongTensor(text_int)
             text_size = torch.LongTensor([text_tensor.size(0)])
             return (text_tensor, img_id, target, text_size)
@@ -547,19 +547,20 @@ def test(model, loader):
             for k in range(10):
                 dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
                                                   img_feat[i+k].view(1, -1).expand(size, 2048)).sum()
+                dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
+                                           img_feat[i + k].view(1, -1).expand(size, 2048)).sum()
                 scores[k] = torch.mean(dist).data[0]
-            top1 += 1 if target.data[0] in scores.topk(1)[1].data else 0
-            top3 += 1 if target.data[0] in scores.topk(3)[1].data else 0
-            top5 += 1 if target.data[0] in scores.topk(5)[1].data else 0
+            test_loss += scores[target.data[0]]
+            top1 += 1 if target.data[0] in scores.topk(1)[1] else 0
+            top3 += 1 if target.data[0] in scores.topk(3)[1] else 0
+            top5 += 1 if target.data[0] in scores.topk(5)[1] else 0
             predictions.append(scores)
             print('we')
-
-
             total_idx += size
 
         # text.requires_grad = True
         # img_feat.requires_grad = True
-
+    test_loss /= total_idx
     top1 /= total_idx
     top3 /= total_idx
     top5 /= total_idx
