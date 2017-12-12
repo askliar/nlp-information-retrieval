@@ -22,8 +22,8 @@ CUDA = torch.cuda.is_available()
 
 torch.manual_seed(1)
 
-captions_batch_size = 512
-questions_batch_size = 512
+captions_batch_size = 256
+questions_batch_size = 256
 torch.manual_seed(42)
 img_data = '../data/img_data'
 text_data = '../data/text_data'
@@ -60,16 +60,21 @@ stemmer = SnowballStemmer("english")
 w2i = defaultdict(lambda: len(w2i))
 UNK = w2i["<unk>"]
 
+
 class CBOW(torch.nn.Module):
     def __init__(self, vocab_size, img_feat_size):
         super(CBOW, self).__init__()
-        self.embeddings = torch.nn.Embedding(vocab_size, img_feat_size,padding_idx=0)
+        self.embeddings = torch.nn.Embedding(vocab_size, img_feat_size, padding_idx=0)
         self.proj = nn.Linear(img_feat_size, img_feat_size)
+    def selu(self, x):
+        alpha = 1.6732632423543772848170429916717
+        scale = 1.0507009873554804934193349852946
+        return scale * F.elu(x, alpha)
     def forward(self, input_text):
         input_text = input_text.view(input_text.size(0), -1)
         x = self.embeddings(input_text)
         x = torch.sum(x, 1)
-        x = self.proj(F.selu(x))
+        x = self.proj(self.selu(x))
         return x
 
 
@@ -126,9 +131,9 @@ class GenericDataSet(Dataset):
             tup = self.convert_to_int(row, stem, stopwords, stop_vocab)
             if tup is not None:
                 data_storage.append(tup)
-                    # data_storage['text'].append(text_tensor)
-                    # data_storage['img_id'].append(img_id)
-                    # data_storage['target'].append(target)
+                # data_storage['text'].append(text_tensor)
+                # data_storage['img_id'].append(img_id)
+                # data_storage['target'].append(target)
         return data_storage
 
     def text2int(self, text):
@@ -178,9 +183,11 @@ class QuestionsDataSet(GenericDataSet):
                 augmented_question_int = question_int[:-1] + [
                     (self.vocab['no'] if answer == 'yes' else self.vocab['yes'])]
                 answer_int = 1 if answer == 'yes' else -1
+                # BOOKMARK: orig questions
                 augmented_answer_int = -answer_int
                 answers_int.extend([answer_int, augmented_answer_int])
                 questions_int.extend([question_int, augmented_question_int])
+                # end of bookmark
         text_int = pad_text(questions_int)
         if len(text_int) > 0:
             img_id = row.target_img_id
@@ -298,11 +305,13 @@ def pad_dict(data):
 
     return data
 
+
 def pad_text_minbatches(texts, max_size):
     for idx, text in enumerate(texts):
         padding = torch.zeros((max_size - text.size(0), text.size(1))).long()
         texts[idx] = torch.cat((text, padding), 0)
     return texts
+
 
 def train_c_fn(batch):
     batch = pad_dict(batch)
@@ -332,6 +341,7 @@ def train_c_fn(batch):
 
     return {'text': text_tensor, 'img_feat': img_id, 'target': target, 'size': size}
 
+
 def c_fn(batch):
     batch = pad_dict(batch)
     texts = []
@@ -349,7 +359,7 @@ def c_fn(batch):
         targets.append(target)
         sizes.append(size)
         max_size = max(max_size, torch.max(size))
-    #COMMENT FOR OLD
+    # COMMENT FOR OLD
     # texts = pad_text_minbatches(texts, max_size)
     text_tensor = torch.cat(texts, 0)
     img_id = torch.cat(img_ids, 0)
@@ -369,7 +379,6 @@ if CUDA:
         gpu_stats = gpustat.GPUStatCollection.new_query()
         item = gpu_stats.jsonify()["gpus"][device]
         print("{}/{}".format(item["memory.used"], item["memory.total"]))
-
 
 # load data
 data_train_captions = CaptionsDataSet(json_file=json_train_file,
@@ -398,7 +407,7 @@ dataloader_train_questions = DataLoader(data_train_questions, batch_size=questio
 
 w2i = defaultdict(lambda: UNK, data_train_questions.vocab)
 
-data_val_questions = TestDataSet(json_file=json_val_file,
+data_val = TestDataSet(json_file=json_val_file,
                                  pickle_file=pickle_val_file,
                                  img_feat_file=img_feat_file,
                                  img_map_file=img_map_file,
@@ -406,11 +415,11 @@ data_val_questions = TestDataSet(json_file=json_val_file,
                                  stopwords=True,
                                  stop_vocab=stop, debug=DEBUG)
 
-dataloader_val = DataLoader(data_val_questions, batch_size=questions_batch_size,
+dataloader_val = DataLoader(data_val, batch_size=questions_batch_size,
                             shuffle=True, num_workers=4, pin_memory=CUDA,
                             collate_fn=c_fn)
 
-data_test_questions = TestDataSet(json_file=json_test_file,
+data_test = TestDataSet(json_file=json_test_file,
                                   pickle_file=pickle_test_file,
                                   img_feat_file=img_feat_file,
                                   img_map_file=img_map_file,
@@ -418,100 +427,78 @@ data_test_questions = TestDataSet(json_file=json_test_file,
                                   stopwords=True,
                                   stop_vocab=stop, debug=DEBUG)
 
-dataloader_test = DataLoader(data_test_questions, batch_size=questions_batch_size,
+dataloader_test = DataLoader(data_test, batch_size=questions_batch_size,
                              shuffle=True, num_workers=4, pin_memory=CUDA,
                              collate_fn=c_fn)
-# i = 0
-# for batch in dataloader_test:
-#     if i > 0:
-#         break
-#     else:
-#         i += 1
-#         print(batch)
 
 
-losslist = []
 
-
-device = 0
 
 # @profile
 def train(model, loader, epochs=3):
     model.train()
-    for e in range(epochs):
+    losses = []
+    if CUDA:
+        model.cuda()
 
+    for e in range(epochs):
         start = time.time()
+
+        train_loss = torch.zeros(1)
+        train_loss_pos = torch.zeros(1)
         if CUDA:
-            train_loss = torch.zeros(1).cuda()
+            train_loss = train_loss.cuda()
+            train_loss_pos = train_loss.cuda()
+
         j = 0
-        if CUDA:
-            model.cuda()
         for batch in loader:
             startb = time.time()
-            # torch.cuda.synchronize()
             if j > 10:
                 break
             j += 1
-            text, img_feat, target, sizes = Variable(batch['text']),\
-                                            Variable(batch['img_feat']),\
-                                            Variable(batch['target']),\
+            text, img_feat, target, sizes = Variable(batch['text']), \
+                                            Variable(batch['img_feat']), \
+                                            Variable(batch['target']), \
                                             Variable(batch['size'])
-            # torch.cuda.synchronize()
             if CUDA:
-                text, img_feat, target, sizes = text.cuda(),\
-                                                img_feat.cuda(),\
-                                                target.cuda(),\
+                text, img_feat, target, sizes = text.cuda(), \
+                                                img_feat.cuda(), \
+                                                target.cuda(), \
                                                 sizes.cuda()
 
             optimizer.zero_grad()
-            print(text.size())
-            if text.size(1) > 25:
-                continue
-            # show_memusage(device=device)
-
             text_prediction = model(text)
-            # distances = F.pairwise_distance(text_prediction, img_feat)
-            xp = -2 * torch.mm(text_prediction, img_feat.t())
-            xp += torch.sum(text_prediction * text_prediction, 1).expand(xp.t().size()).t()
-            xp += torch.sum(img_feat * img_feat, 1).expand(xp.size())
 
-            total_idx = 0
-            # exp1 = img_feat[0].view(1, -1).expand(sizes.data[0], 2048)
-            startl = time.time()
-            name = torch.zeros(1)
-            loss = torch.zeros(1)
-            # use gather instead of creating the exp1 vector
-            for i, size in enumerate(sizes.data):
-                #
-                name += torch.sum(F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
-                                                  img_feat[i].view(1, -1).expand(size, 2048))).data[0]
+            # st = time.time()
+            idx = torch.LongTensor([x for x in range(sizes.size(0)) for kk in range(sizes.data[x])])
+            # print('timeee -- ', time.time() - st)
+            if CUDA:
+                idx = idx.cuda()
 
-                loss += torch.sqrt(xp[total_idx:total_idx+size, i]).sum().data[0]
-                # exp1 = torch.cat((exp1, img_feat[i].view(1, -1).expand(size, 2048)), 0)
-                # total_idx += size
-            idx = [j for j in range(sizes.size(0)) for kk in range(sizes.data[j])]
-
-
-
-            loss3 = F.pairwise_distance(text_prediction, img_feat[torch.LongTensor(idx)]).sum()
-            # loss3 = F.cosine_similarity(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
-            print('loop', loss.data[0], name.data[0], loss3.data[0], time.time() - startl)
-
-            train_loss += loss3.data[0]
-            loss3.backward()
+            distances = F.pairwise_distance(text_prediction, img_feat[idx])
+            loss = (distances * target).mean()
+            # loss = F.cosine_similarity(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
+            train_loss += loss.data[0]
+            train_loss_pos += distances.mean().data[0]  # loss.data[0]
+            loss.backward()
             optimizer.step()
 
-            # del loss3, text, img_feat, target, sizes, text_prediction, idx
-            print(time.time() - startb)
-        # if e < 5:
-        #     for param_group in optimizer.param_groups:
-        #         param_group['lr'] += 0.000004
-        #         print(param_group['lr'])
-                # param_group['lr'] *= lr_decay
+
+        if e < 5:
+            for param_group in optimizer.param_groups:
+                param_group['lr'] *= np.float_power(5, 1 / 5)
 
         # losslist.append(train_loss)
-        print(train_loss)
-        print(time.time() - start)
+        print(train_loss[0])
+        losses.append(train_loss[0])
+        print('time epoch ', e, ' -> ', time.time() - start)
+
+        if e % 11 == 0:
+            torch.save(model, 'cap_checkpoint_' + str(e))
+    pickle.dump(losses, open('cap_losses', 'wb'))
+    import matplotlib.pyplot as plt
+    plt.plot(losses)
+
 
 def test(model, loader):
     start = time.time()
@@ -519,61 +506,125 @@ def test(model, loader):
     if CUDA:
         test_loss = torch.zeros(1).cuda()
     test_loss = 0
+    test_loss2 = 0
+    N = 0
     top1 = 0
+    top12 = 0
     top3 = 0
+    top32 = 0
     top5 = 0
+    top52 = 0
     for j, batch in enumerate(loader):
 
-        text, img_feat, target, sizes = Variable(batch['text']),\
-                                        Variable(batch['img_feat']),\
-                                        Variable(batch['target']),\
+        text, img_feat, target, sizes = Variable(batch['text']), \
+                                        Variable(batch['img_feat']), \
+                                        Variable(batch['target']), \
                                         Variable(batch['size'])
         # torch.cuda.synchronize()
         if CUDA:
-            text, img_feat, target, sizes = text.cuda(),\
-                                            img_feat.cuda(),\
-                                            target.cuda(),\
+            text, img_feat, target, sizes = text.cuda(), \
+                                            img_feat.cuda(), \
+                                            target.cuda(), \
                                             sizes.cuda()
-        text.requires_grad = False
-        img_feat.requires_grad = False
+        # text.requires_grad = False
+        # img_feat.requires_grad = False
         # optimizer.zero_grad()
         text_prediction = model(text)
         total_idx = 0
         predictions = []
+        predictions2 = []
+
+        xp = -2 * torch.mm(text_prediction, img_feat.t())
+        xp += torch.sum(text_prediction * text_prediction, 1).expand(xp.t().size()).t()
+        xp += torch.sum(img_feat * img_feat, 1).expand(xp.size())
+        total_idx = 0
         for i, size in enumerate(sizes.data):
-            scores = torch.zeros(10)
-            for k in range(10):
-                dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
-                                                img_feat[i + k].view(1, -1).expand(size, 2048)).sum()
-                # dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
-                #                                 img_feat[i + k].view(1, -1).expand(size, 2048)).sum()
-                scores[k] = torch.mean(dist).data[0]
+            scores = torch.sqrt(xp[total_idx:total_idx+size, i*10:i*10+10]).sum(0).data
             test_loss += scores[target.data[0]]
             top1 += 1 if target.data[0] in scores.topk(1)[1] else 0
             top3 += 1 if target.data[0] in scores.topk(3)[1] else 0
             top5 += 1 if target.data[0] in scores.topk(5)[1] else 0
             predictions.append(scores)
-            print('we')
+
+
+            # scores2 = torch.zeros(10)
+            # for k in range(10):
+            #     dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
+            #                                img_feat[i + k].view(1, -1).expand(size, 2048)).sum()
+            #     scores2[k] = torch.mean(dist).data[0]
+            # test_loss2 += scores[target.data[0]]
+            # top12 += 1 if target.data[0] in scores.topk(1)[1] else 0
+            # top32 += 1 if target.data[0] in scores.topk(3)[1] else 0
+            # top52 += 1 if target.data[0] in scores.topk(5)[1] else 0
+            # predictions2.append(scores2)
+            N += 1
             total_idx += size
 
-        # text.requires_grad = True
-        # img_feat.requires_grad = True
-    test_loss /= total_idx
-    top1 /= total_idx
-    top3 /= total_idx
-    top5 /= total_idx
+        # for i, size in enumerate(sizes.data):
+        #     scores = torch.zeros(10)
+        #     for k in range(10):
+        #         dist = F.pairwise_distance(text_prediction[total_idx: (total_idx + size)],
+        #                                    img_feat[i + k].view(1, -1).expand(size, 2048)).sum()
+        #         scores[k] = torch.mean(dist).data[0]
+        #     test_loss += scores[target.data[0]]
+        #     top1 += 1 if target.data[0] in scores.topk(1)[1] else 0
+        #     top3 += 1 if target.data[0] in scores.topk(3)[1] else 0
+        #     top5 += 1 if target.data[0] in scores.topk(5)[1] else 0
+        #     predictions.append(scores)
+        #     N += 1
+        #     total_idx += size
+    test_loss /= N
+    top1 /= N
+    top3 /= N
+    top5 /= N
     print(top1, top3, top5)
     print(test_loss)
     print(time.time() - start)
 
-model = CBOW(vocab_size=len(w2i),img_feat_size=2048)
-optimizer = optim.Adam(model.parameters(), lr=0.000005)
+#
+# 0.1 0.2966 0.5014
+# 688.7573033172607
+# 4.097585439682007
 
-train(model, dataloader_train_questions, 20)
-test(model, data_test_questions)
+# 0.0982 0.2974 0.4992
+# 690.3066700332641
+# 13.765591859817505
+
+# 0.1032 0.2974 0.502
+# 690.4895692977906
+# 13.727421283721924
+
+# 0.1 0.2966 0.5014
+# 145.83495834350586
+# 4.106285572052002
+
+# 0.1008 0.2896 0.4912
+# 688.5925689743042
+# 3.635680675506592
+
+# 0.1014 0.2918 0.4956
+# 689.1907331314087
+# 3.5045695304870605
+
+# 0.1042 0.2998 0.5046
+# 691.4041340530396
+# 13.347415447235107
+
+model = CBOW(vocab_size=len(w2i), img_feat_size=2048)
+optimizer = optim.Adam(model.parameters(), lr=0.0005 / 10)
+
+train(model, dataloader_train_questions, 100)
+test(model, dataloader_val)
 import matplotlib.pyplot as plt
-plt.plot(losslist)
-plt.show()
+# plt.plot(losslist)
+# plt.show()
+
+
+
+
+#
+
+
 # def glvq_costfun(self, x, batch_labels):
 #     xp = -2 * torch.mm(x, self.prototypes.t())
 #     xp += torch.sum(x * x, 1).expand(xp.t().size()).t()
@@ -590,3 +641,94 @@ plt.show()
 #     d2s, arg_d2s = torch.min(xp2, 1)
 #     res = torch.sum((d1s - d2s) / (d1s + d2s))
 #     return res, arg_d1s
+
+
+
+
+#
+# # @profile
+# def train(model, loader, epochs=3):
+#     model.train()
+#     for e in range(epochs):
+#
+#         start = time.time()
+#         if CUDA:
+#             train_loss = torch.zeros(1).cuda()
+#         j = 0
+#         if CUDA:
+#             model.cuda()
+#         for batch in loader:
+#             startb = time.time()
+#             # torch.cuda.synchronize()
+#             if j > 100000000:
+#                 break
+#             j += 1
+#             text, img_feat, target, sizes = Variable(batch['text']), \
+#                                             Variable(batch['img_feat']), \
+#                                             Variable(batch['target']), \
+#                                             Variable(batch['size'])
+#             # torch.cuda.synchronize()
+#             if CUDA:
+#                 text, img_feat, target, sizes = text.cuda(), \
+#                                                 img_feat.cuda(), \
+#                                                 target.cuda(), \
+#                                                 sizes.cuda()
+#
+#             optimizer.zero_grad()
+#             print(text.size())
+#             if text.size(1) > 25:
+#                 continue
+#             # show_memusage(device=device)
+#
+#             text_prediction = model(text)
+#             # distances = F.pairwise_distance(text_prediction, img_feat)
+#             # xp = -2 * torch.mm(text_prediction, img_feat.t())
+#             # xp += torch.sum(text_prediction * text_prediction, 1).expand(xp.t().size()).t()
+#             # xp += torch.sum(img_feat * img_feat, 1).expand(xp.size())
+#
+#             total_idx = 0
+#             # exp1 = img_feat[0].view(1, -1).expand(sizes.data[0], 2048)
+#
+#             # startl = time.time()
+#             # name = Variable(torch.zeros(1))
+#             #
+#             loss = Variable(torch.zeros(1))
+#             if CUDA:
+#             #     name = name.cuda()
+#                 loss = loss.cuda()
+#             # use gather instead of creating the exp1 vector
+#             # for i, size in enumerate(sizes.data):
+#             #     name += (F.cosine_similarity(text_prediction[total_idx: (total_idx + size)],
+#             #                                           img_feat[i].view(1, -1).expand(size, 2048))).sum()
+#             #     loss += torch.sqrt(xp[total_idx:total_idx+size, i]).sum()
+#
+#                 # exp1 = torch.cat((exp1, img_feat[i].view(1, -1).expand(size, 2048)), 0)
+#                 # total_idx += size
+#             st = time.time()
+#             idx = torch.LongTensor([x for x in range(sizes.size(0)) for kk in range(sizes.data[x])])
+#             print('timeee -- ', time.time() - st)
+#             # loss2 = F.cosine_similarity(text_prediction, exp1[sizes.data[0]:]).sum()
+#             if CUDA:
+#                 idx = idx.cuda()
+#
+#
+#
+#             loss3 = F.pairwise_distance(text_prediction, img_feat[idx]).sum()
+#             # loss3 = F.cosine_similarity(text_prediction, img_feat[torch.cuda.LongTensor(idx)]).sum()
+#             # print('loop', loss.data[0], name.data[0], loss2.data[0], loss3.data[0], time.time() - startl)
+#             # print('loop', loss[0], name[0], loss[0], loss3.data[0], time.time() - startl)
+#             train_loss += loss3.data[0]  # loss.data[0]
+#             loss3.backward()
+#             optimizer.step()
+#
+#             # del loss3, text, img_feat, target, sizes, text_prediction, idx
+#             print('batch time', time.time() - startb)
+#             # if e < 5:
+#             #     for param_group in optimizer.param_groups:
+#             #         param_group['lr'] += 0.000004
+#             #         print(param_group['lr'])
+#             # param_group['lr'] *= lr_decay
+#
+#         # losslist.append(train_loss)
+#         print(train_loss)
+#         print(time.time() - start)
