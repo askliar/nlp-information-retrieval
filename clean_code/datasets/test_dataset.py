@@ -6,12 +6,12 @@ from utilities.data_helpers import pad_text
 
 class TestDataSet(GenericDataSet):
     def __init__(self, json_file, pickle_file, img_feat_file, img_map_file,
-                 vocab, vocab_pickle_file, stem=True, stopwords=False, stop_vocab=None, normalize=True,
+                 vocab, vocab_pickle_file, histogram_pickle_file, stem=True, stopwords=False, stop_vocab=None, normalize=True,
                  debug=False, augment_binary=False, remove_nonbinary=True):
         self.augment_binary = augment_binary
         self.remove_nonbinary = remove_nonbinary
         super().__init__(json_file, pickle_file, img_feat_file, img_map_file,
-                         vocab, vocab_pickle_file, stem, stopwords, stop_vocab, normalize, debug)
+                         vocab, vocab_pickle_file, histogram_pickle_file, stem, stopwords, stop_vocab, normalize, debug)
 
     def convert_to_int(self, row, stem, stopwords, stop_vocab):
         questions_int = self.convert_question_to_int(row.dialog, stem, stopwords, stop_vocab)

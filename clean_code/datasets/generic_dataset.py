@@ -13,7 +13,7 @@ from collections import Counter
 
 class GenericDataSet(Dataset):
     def __init__(self, json_file, pickle_file, img_feat_file, img_map_file,
-                 vocab, vocab_pickle_file, stem=True, stopwords=False,
+                 vocab, vocab_pickle_file, histogram_pickle_file, stem=True, stopwords=False,
                  stop_vocab=None, normalize=True, debug=False):
         self.sentences_histograms = Counter()
         self.img_features, self.mean, self.std, self.visual_feat_mapping = self.load_image_data(img_feat_file,
@@ -23,11 +23,14 @@ class GenericDataSet(Dataset):
             self.stop_vocab = stop_vocab
         retrieve = os.path.isfile(pickle_file)
         if retrieve:
-            with open(pickle_file, 'rb') as data_pickle, open(vocab_pickle_file, 'rb') as vocab_pickle:
+            with open(pickle_file, 'rb') as data_pickle, open(vocab_pickle_file, 'rb') as vocab_pickle, \
+                    open(histogram_pickle_file, 'rb') as histogram_pickle:
                 self.data = pickle.load(data_pickle)
                 self.vocab = pickle.load(vocab_pickle)
+                self.sentences_histograms = pickle.load(histogram_pickle)
             data_pickle.close()
             vocab_pickle.close()
+            histogram_pickle.close()
         else:
             df = pd.read_json(json_file).T.sort_index()
             if debug:
@@ -35,11 +38,14 @@ class GenericDataSet(Dataset):
 
             self.data = self.preprocess_data(df, stem, stopwords, stop_vocab)
             if not debug:
-                with open(pickle_file, 'wb') as data_pickle, open(vocab_pickle_file, 'wb') as vocab_pickle:
+                with open(pickle_file, 'wb') as data_pickle, open(vocab_pickle_file, 'wb') as vocab_pickle, \
+                        open(histogram_pickle_file, 'wb') as histogram_pickle:
                     pickle.dump(self.data, data_pickle)
                     pickle.dump(dict(vocab), vocab_pickle)
+                    pickle.dump(dict(self.sentences_histograms), vocab_pickle)
                 data_pickle.close()
                 vocab_pickle.close()
+                histogram_pickle.close()
 
     def __len__(self):
         return len(self.data)
