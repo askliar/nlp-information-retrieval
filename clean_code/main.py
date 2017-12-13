@@ -108,7 +108,7 @@ def main():
         model.losses_pos = losses_pos
         print('time epoch ', e, ' -> ', time.time() - start)
 
-        if e % 10 == 9:
+        if e % 10 == 9 or True:
             torch.save(model, 'data/' + config.uid_str + '/checkpoint_' + str(e) + '_' + config.uid_str + '.pth.tar')
 
         test_time = time.time()

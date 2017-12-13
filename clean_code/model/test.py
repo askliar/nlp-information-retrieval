@@ -42,19 +42,19 @@ def test(model, loader, config):
 
         # print(text.size(), img_feat.size(), target.size(), sizes.size())
         for i, size in enumerate(sizes.data):
-            # if img_feat.size(0) >= 5:
-            # if cosine_similarity:
-            #     scores = xp[total_idx:total_idx + size, img_total_idx:img_total_idx+img_feat.size(0)].sum(0).data
-            # else:
-            #     scores = torch.sqrt(xp[total_idx:total_idx+size, img_total_idx:img_total_idx+img_feat.size(0)]).sum(0).data
-            # test_loss += scores[target.data[i]]
-            # print(img_feat.size(0))
-            # top1 += 1 if target.data[i] in scores.topk(1, largest=False)[1] else 0
-            # top3 += 1 if target.data[i] in scores.topk(3, largest=False)[1] else 0
-            # top5 += 1 if target.data[i] in scores.topk(5, largest=False)[1] else 0
-            # predictions.append(scores)
-            hist[img_feat.size(0)-1] += 1
-            N += 1
+            if img_feat.size(0) == 10:
+                if cosine_similarity:
+                    scores = xp[total_idx:total_idx + size, img_total_idx:img_total_idx+img_feat.size(0)].sum(0).data
+                else:
+                    scores = torch.sqrt(xp[total_idx:total_idx+size, img_total_idx:img_total_idx+img_feat.size(0)]).sum(0).data
+                test_loss += scores[target.data[i]]
+                # print(img_feat.size(0))
+                top1 += 1 if target.data[i] in scores.topk(1, largest=False)[1] else 0
+                top3 += 1 if target.data[i] in scores.topk(3, largest=False)[1] else 0
+                top5 += 1 if target.data[i] in scores.topk(5, largest=False)[1] else 0
+                predictions.append(scores)
+                hist[img_feat.size(0)-1] += 1
+                N += 1
             total_idx += size
             img_total_idx += img_feat.size(0)
     print(hist)
