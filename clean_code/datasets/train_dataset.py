@@ -43,6 +43,7 @@ class QuestionsDataSet(GenericDataSet):
             if is_binary:
                 question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                 question_int = self.text2int(question_preprocessed)
+                self.sentences_histograms[len(question_int)] += 1
                 answer_int = 1 if answer == 'yes' else -1
                 if self.augment_binary:
                     augmented_question_int = question_int[:-1] + [
@@ -61,6 +62,7 @@ class QuestionsDataSet(GenericDataSet):
                 else:
                     question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                     question_int = self.text2int(question_preprocessed)
+                    self.sentences_histograms[len(question_int)] += 1
                     answer_int = 1
                     answers_int.append(answer_int)
                     questions_int.append(question_int)
@@ -77,6 +79,7 @@ class CaptionsDataSet(GenericDataSet):
         text = row.caption
         caption_preprocessed = self.preprocess_text(text, stem, stopwords, stop_vocab)
         text_int = self.text2int(caption_preprocessed)
+        self.sentences_histograms[len(text_int)] += 1
         target = [1]
         if len(text_int) > 0:
             img_id = row.target_img_id

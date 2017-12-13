@@ -8,12 +8,14 @@ import numpy as np
 from nltk import word_tokenize
 from torch.utils.data import Dataset
 from utilities.nltk_helpers import stemmer
+from collections import Counter
 
 
 class GenericDataSet(Dataset):
     def __init__(self, json_file, pickle_file, img_feat_file, img_map_file,
                  vocab, vocab_pickle_file, stem=True, stopwords=False,
                  stop_vocab=None, normalize=True, debug=False):
+        self.sentences_histograms = Counter()
         self.img_features, self.mean, self.std, self.visual_feat_mapping = self.load_image_data(img_feat_file,
                                                                                                 img_map_file)
         self.vocab = vocab
