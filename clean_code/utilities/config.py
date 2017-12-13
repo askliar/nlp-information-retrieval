@@ -9,10 +9,10 @@ class Config():
         self.DEBUG = False
         self.CUDA = torch.cuda.is_available()
 
-        self.captions_batch_size = 128
-        self.questions_batch_size = 128
-        self.val_batch_size = 1
-        self.test_batch_size = 1
+        self.captions_batch_size = 64
+        self.questions_batch_size = 64
+        self.val_batch_size = 8
+        self.test_batch_size = 8
         self.stopwords = True
         self.stop = stop
 
@@ -20,7 +20,7 @@ class Config():
 
         self.img_data = 'data/img_data'
         self.text_data = 'data/text_data'
-        self.complexity = 'hard'
+        self.complexity = 'easy'
 
         self.remove_nonbinary = remove_nonbinary
         self.remove_nonbinary_str = 'bin' if self.remove_nonbinary else 'all'

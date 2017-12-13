@@ -18,5 +18,5 @@ class MLP2(torch.nn.Module):
         self.fc2 = nn.Linear(hidden_size, output_size)
     def forward(self, input_img):
         x = self.fc1(input_img)
-        x = self.fc1(F.selu(x))
+        x = self.fc2(F.selu(x))
         return x
