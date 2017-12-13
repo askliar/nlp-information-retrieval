@@ -5,6 +5,11 @@ import torch.nn.functional as F
 class CBOW(torch.nn.Module):
     def __init__(self, vocab_size, img_feat_size):
         super(CBOW, self).__init__()
+        self.losses = []
+        self.losses_pos = []
+        self.top1s, self.top3s, self.top5s = [], [], []
+        self.losses_test = []
+
         self.embeddings = torch.nn.Embedding(vocab_size, img_feat_size, padding_idx=0)
         self.proj = nn.Linear(img_feat_size, img_feat_size)
 

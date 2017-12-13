@@ -1,11 +1,8 @@
-# load data
-from collections import defaultdict
 from torch.utils.data import DataLoader
 
-from clean_code.clean_model import UNK
-from clean_code.datasets.test_dataset import TestDataSet
-from clean_code.datasets.train_dataset import CaptionsDataSet, QuestionsDataSet
-from clean_code.utilities.data_helpers import train_c_fn, c_fn
+from datasets.test_dataset import TestDataSet
+from datasets.train_dataset import CaptionsDataSet, QuestionsDataSet
+from utilities.data_helpers import train_c_fn, c_fn
 
 
 class DataLoaderFactory():
@@ -32,8 +29,10 @@ class DataLoaderFactory():
                                                 img_feat_file=self.config.img_feat_file,
                                                 img_map_file=self.config.img_map_file,
                                                 vocab=vocab, vocab_pickle_file=self.config.pickle_vocab_file,
-                                                stopwords=True,
-                                                stop_vocab=self.config.stop, debug=self.config.DEBUG)
+                                                stopwords=True, stop_vocab=self.config.stop, debug=self.config.DEBUG,
+                                                augment_binary=self.config.augment_binary,
+                                                remove_nonbinary=self.config.remove_nonbinary,
+                                                include_captions=self.config.include_captions)
 
         dataloader_train_questions = DataLoader(data_train_questions, batch_size=self.config.questions_batch_size,
                                                 shuffle=True, num_workers=4, pin_memory=self.config.CUDA,
@@ -47,9 +46,11 @@ class DataLoaderFactory():
                                img_map_file=self.config.img_map_file,
                                vocab=vocab, vocab_pickle_file=self.config.pickle_vocab_file,
                                stopwords=True,
-                               stop_vocab=self.config.stop, debug=self.config.DEBUG)
+                               stop_vocab=self.config.stop, debug=self.config.DEBUG,
+                               augment_binary=self.config.augment_binary,
+                               remove_nonbinary=self.config.remove_nonbinary)
 
-        dataloader_val = DataLoader(data_val, batch_size=self.config.questions_batch_size,
+        dataloader_val = DataLoader(data_val, batch_size=self.config.val_batch_size,
                                     shuffle=True, num_workers=4, pin_memory=self.config.CUDA,
                                     collate_fn=c_fn)
         return data_val, dataloader_val
@@ -61,9 +62,11 @@ class DataLoaderFactory():
                                 img_map_file=self.config.img_map_file,
                                 vocab=vocab, vocab_pickle_file=self.config.pickle_vocab_file,
                                 stopwords=True,
-                                stop_vocab=self.config.stop, debug=self.config.DEBUG)
+                                stop_vocab=self.config.stop, debug=self.config.DEBUG,
+                                augment_binary=self.config.augment_binary,
+                                remove_nonbinary=self.config.remove_nonbinary)
 
-        dataloader_test = DataLoader(data_test, batch_size=self.config.questions_batch_size,
+        dataloader_test = DataLoader(data_test, batch_size=self.config.test_batch_size,
                                      shuffle=True, num_workers=4, pin_memory=self.config.CUDA,
                                      collate_fn=c_fn)
         return data_test, dataloader_test

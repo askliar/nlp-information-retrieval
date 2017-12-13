@@ -114,3 +114,21 @@
 #         # losslist.append(train_loss)
 #         print(train_loss)
 #         print(time.time() - start)
+
+
+
+# the following is slower, but might require a bit less memory
+
+# for i, size in enumerate(sizes.data):
+#     scores = torch.zeros(10)
+#     for k in range(10):
+#         dist = F.cosine_similarity(text_prediction[total_idx: (total_idx + size)],
+#                                    img_feat[i*10 + k].view(1, -1).expand(size, 2048)).sum()
+#         scores[k] = torch.mean(dist).data[0]
+#     test_loss += scores[target.data[i]]
+#     top1 += 1 if target.data[i] in scores.topk(1, largest=False)[1] else 0
+#     top3 += 1 if target.data[i] in scores.topk(3, largest=False)[1] else 0
+#     top5 += 1 if target.data[i] in scores.topk(5, largest=False)[1] else 0
+#     predictions.append(scores)
+#     N += 1
+#     total_idx += size

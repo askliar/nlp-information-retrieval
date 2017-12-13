@@ -1,9 +1,13 @@
+import json
+import pickle
 import h5py
+import os
 import torch
-from textblob.tokenizers import word_tokenize
+import pandas as pd
+import numpy as np
+from nltk import word_tokenize
 from torch.utils.data import Dataset
-
-from clean_code.utilities.nltk_helpers import stemmer
+from utilities.nltk_helpers import stemmer
 
 
 class GenericDataSet(Dataset):
@@ -51,12 +55,12 @@ class GenericDataSet(Dataset):
         # sample = (text_tensor, img_feat, target)
         return sample
 
-    def preprocess_data(self, df, stem, stopwords, stop_vocab, augment_binary):
+    def preprocess_data(self, df, stem, stopwords, stop_vocab):
         data_storage = []
         # data_storage = {'text':[], 'img_id':[], 'target':[]}
 
         for row in df.itertuples():
-            tup = self.convert_to_int(row, stem, stopwords, stop_vocab, augment_binary)
+            tup = self.convert_to_int(row, stem, stopwords, stop_vocab)
             if tup is not None:
                 data_storage.append(tup)
                 # data_storage['text'].append(text_tensor)
