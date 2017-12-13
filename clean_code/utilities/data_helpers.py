@@ -91,7 +91,7 @@ def c_fn(batch):
     return {'text': text_tensor, 'img_feat': img_id, 'target': target, 'size': size}
 
 def plot_histogram(histogram_dict):
-    labels, values = zip(histogram_dict.items())
+    labels, values = zip(*histogram_dict.items())
 
     indexes = np.arange(len(labels))
     width = 1

@@ -42,7 +42,7 @@ class GenericDataSet(Dataset):
                         open(histogram_pickle_file, 'wb') as histogram_pickle:
                     pickle.dump(self.data, data_pickle)
                     pickle.dump(dict(vocab), vocab_pickle)
-                    pickle.dump(dict(self.sentences_histograms), vocab_pickle)
+                    pickle.dump(dict(self.sentences_histograms), histogram_pickle)
                 data_pickle.close()
                 vocab_pickle.close()
                 histogram_pickle.close()
