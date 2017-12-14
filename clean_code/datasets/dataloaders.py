@@ -15,7 +15,7 @@ class DataLoaderFactory():
                                               img_feat_file=self.config.img_feat_file,
                                               img_map_file=self.config.img_map_file,
                                               vocab=vocab, vocab_pickle_file=self.config.pickle_vocab_file,
-                                              histogram_pickle_file=self.config.pickle_histograms_file,
+                                              histogram_pickle_file=self.config.pickle_captions_histograms_file,
                                               stopwords=self.config.stopwords, stop_vocab=self.config.stop,
                                               debug=self.config.DEBUG)
 
@@ -30,7 +30,7 @@ class DataLoaderFactory():
                                                 img_feat_file=self.config.img_feat_file,
                                                 img_map_file=self.config.img_map_file,
                                                 vocab=vocab, vocab_pickle_file=self.config.pickle_vocab_file,
-                                                histogram_pickle_file=self.config.pickle_histograms_file,
+                                                histogram_pickle_file=self.config.pickle_questions_histograms_file,
                                                 stopwords=True, stop_vocab=self.config.stop, debug=self.config.DEBUG,
                                                 augment_binary=self.config.augment_binary,
                                                 remove_nonbinary=self.config.remove_nonbinary,
@@ -47,7 +47,6 @@ class DataLoaderFactory():
                                img_feat_file=self.config.img_feat_file,
                                img_map_file=self.config.img_map_file,
                                vocab=vocab, vocab_pickle_file=self.config.pickle_vocab_file,
-                               histogram_pickle_file=self.config.pickle_histograms_file,
                                stopwords=True,
                                stop_vocab=self.config.stop, debug=self.config.DEBUG,
                                augment_binary=self.config.augment_binary,
@@ -64,7 +63,6 @@ class DataLoaderFactory():
                                 img_feat_file=self.config.img_feat_file,
                                 img_map_file=self.config.img_map_file,
                                 vocab=vocab, vocab_pickle_file=self.config.pickle_vocab_file,
-                                histogram_pickle_file=self.config.pickle_histograms_file,
                                 stopwords=True,
                                 stop_vocab=self.config.stop, debug=self.config.DEBUG,
                                 augment_binary=self.config.augment_binary,

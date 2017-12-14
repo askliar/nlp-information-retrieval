@@ -43,6 +43,8 @@ class QuestionsDataSet(GenericDataSet):
             if is_binary:
                 question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                 question_int = self.text2int(question_preprocessed)
+                if len(question_int) > 20:
+                    continue
                 self.sentences_histograms[len(question_int)] += 1
                 answer_int = 1 if answer == 'yes' else -1
                 if self.augment_binary:
@@ -62,6 +64,8 @@ class QuestionsDataSet(GenericDataSet):
                 else:
                     question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                     question_int = self.text2int(question_preprocessed)
+                    if len(question_int) > 20:
+                        continue
                     self.sentences_histograms[len(question_int)] += 1
                     answer_int = 1
                     answers_int.append(answer_int)
@@ -81,7 +85,7 @@ class CaptionsDataSet(GenericDataSet):
         text_int = self.text2int(caption_preprocessed)
         self.sentences_histograms[len(text_int)] += 1
         target = [1]
-        if len(text_int) > 0:
+        if len(text_int) > 0 and len(text_int) < 20:
             img_id = row.target_img_id
             target = torch.FloatTensor(target)
             text_tensor = torch.LongTensor(text_int)

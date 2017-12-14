@@ -66,8 +66,11 @@ class Config():
         self.pickle_vocab_file = os.path.join(self.text_data,
                                               '{}/vocab.pkl'.format(self.complexity.capitalize(), self.complexity))
 
-        self.pickle_histograms_file = self.pickle_test_file = os.path.join(self.text_data,
-                                             '{}/histogram_{}_{}.pkl'.format(self.complexity.capitalize(),
+        self.pickle_questions_histograms_file = os.path.join(self.text_data,
+                                             '{}/histogram_questions_{}_{}.pkl'.format(self.complexity.capitalize(),
+                                                                           self.complexity, self.pickle_uid_str))
+        self.pickle_captions_histograms_file = os.path.join(self.text_data,
+                                             '{}/histogram_captions_{}_{}.pkl'.format(self.complexity.capitalize(),
                                                                            self.complexity, self.pickle_uid_str))
 
         # if not os.path.exists(self.uid_str):
