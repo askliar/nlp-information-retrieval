@@ -85,7 +85,7 @@ def main():
     # captions_dataset, captions_dataloader = factory.generate_captions_dataset(w2i)
     questions_dataset, questions_dataloader = factory.generate_questions_dataset(w2i)
 
-    print(questions_dataset.sentences_histograms)
+    # print(questions_dataset.sentences_histograms)
     # plot_histogram(questions_dataset.sentences_histograms)
     # print(captions_dataset.sentences_histograms)
     # plot_histogram(captions_dataset.sentences_histograms)

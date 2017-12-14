@@ -64,7 +64,7 @@ def test(model, image_layer, loader, config):
             N += 1
             total_idx += size
             img_total_idx += img_prediction.size(0)
-    print(hist)
+    # print(hist)
     test_loss /= N
     top1 /= N
     top3 /= N
