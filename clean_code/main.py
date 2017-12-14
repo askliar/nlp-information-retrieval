@@ -8,8 +8,9 @@ from model.test import test
 from utilities.config import Config
 
 import torch
-import numpy as np
 import time
+
+from model.image_layers import MLP1, MLP2
 
 from utilities.helper_functions import str2bool
 
@@ -49,6 +50,13 @@ def main():
         default='True'
     )
     parser.add_argument(
+        '--image_layer',
+        help='image layer',
+        type=str,
+        default='None'
+    )
+
+    parser.add_argument(
         '--file',
         help='Path of a model',
         type=str,
@@ -59,8 +67,9 @@ def main():
     captions = str2bool(args.captions)
     augment = str2bool(args.augment)
     epochs = args.epochs
+    image_layer = args.image_layer
     cosine_similarity = str2bool(args.cosine)
-    config = Config(include_captions=captions,remove_nonbinary=onlybin,augment_binary=augment, cosine_similarity=cosine_similarity)
+    config = Config(include_captions=captions,remove_nonbinary=onlybin,augment_binary=augment, cosine_similarity=cosine_similarity, image_layer=image_layer)
     factory = DataLoaderFactory(config)
 
     w2i = defaultdict(lambda: len(w2i))
@@ -81,6 +90,12 @@ def main():
 
 
     model = CBOW(vocab_size=len(w2i), img_feat_size=2048)
+    image_layer = None
+    if config.image_layer == 'mlp1':
+        image_layer = MLP1(2048, 2048)
+    elif config.image_layer == 'mlp2':
+        image_layer = MLP2(2048, 2048, 2048)
+        
     optimizer = optim.Adam(model.parameters(), lr=0.0001 / 5)
 
     # model = torch.load('../results/checkpoint_22')
@@ -88,14 +103,16 @@ def main():
 
     if CUDA:
         model.cuda()
+        if image_layer != None:
+            image_layer = image_layer.cuda()
     losses = []
     losses_pos = []
 
     for e in range(epochs):
-        print('start of epoch ', e)
+        print('start of epoch ', e, 'for uid ',  config.uid_str)
 
         start = time.time()
-        train_loss, train_loss_pos = train(model, optimizer, questions_dataloader, config)
+        train_loss, train_loss_pos = train(model, image_layer, optimizer, questions_dataloader, config)
 
         # if e < 5:
         #     for param_group in optimizer.param_groups:
@@ -108,11 +125,11 @@ def main():
         model.losses_pos = losses_pos
         print('time epoch ', e, ' -> ', time.time() - start)
 
-        if e % 10 == 9 or True:
+        if e % 10 == 9:
             torch.save(model, 'data/' + config.uid_str + '/checkpoint_' + str(e) + '_' + config.uid_str + '.pth.tar')
 
         test_time = time.time()
-        test_loss, top1, top3, top5 = test(model, val_dataloader, config)
+        test_loss, top1, top3, top5 = test(model, image_layer, val_dataloader, config)
         model.losses_test.append(test_loss)
         model.top1s.append(top1)
         model.top3s.append(top3)

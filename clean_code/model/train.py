@@ -8,7 +8,7 @@ from torch.autograd import Variable
 
 
 
-def train(model, optimizer, loader, config):
+def train(model, image_layer, optimizer, loader, config):
     model.train()
     CUDA = config.CUDA
 
@@ -32,6 +32,9 @@ def train(model, optimizer, loader, config):
 
         optimizer.zero_grad()
         text_prediction = model(text)
+        img_prediction = img_feat
+        if image_layer != None:
+            img_prediction = image_layer(img_feat)
 
         # st = time.time()
         idx = torch.LongTensor([x for x in range(sizes.size(0)) for kk in range(sizes.data[x])])
@@ -39,9 +42,9 @@ def train(model, optimizer, loader, config):
         if CUDA:
             idx = idx.cuda()
         if config.cosine_similarity:
-            distances = F.cosine_similarity(text_prediction, img_feat[idx])
+            distances = F.cosine_similarity(text_prediction, img_prediction[idx])
         else:
-            distances = F.pairwise_distance(text_prediction, img_feat[idx])
+            distances = F.pairwise_distance(text_prediction, img_prediction[idx])
         loss = (distances * target).mean()
 
         train_loss += loss.data[0]

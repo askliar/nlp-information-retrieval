@@ -5,7 +5,7 @@ from utilities.nltk_helpers import stop
 
 
 class Config():
-    def __init__(self, remove_nonbinary=True, include_captions=False, augment_binary=True, cosine_similarity=True):
+    def __init__(self, remove_nonbinary=True, include_captions=False, augment_binary=True, cosine_similarity=True, image_layer='None'):
         self.DEBUG = False
         self.CUDA = torch.cuda.is_available()
 
@@ -21,7 +21,9 @@ class Config():
         self.img_data = 'data/img_data'
         self.text_data = 'data/text_data'
         self.complexity = 'easy'
-
+        
+        self.image_layer = image_layer
+        self.image_layer_str = 'simple' if self.image_layer == 'None' else self.image_layer
         self.remove_nonbinary = remove_nonbinary
         self.remove_nonbinary_str = 'bin' if self.remove_nonbinary else 'all'
         self.augment_binary = augment_binary
@@ -32,8 +34,8 @@ class Config():
         self.cosine_similarity = cosine_similarity
         self.cosine_similarity_str = 'cosine' if self.cosine_similarity else 'euclidean'
 
-        self.uid_str = str.format('{}_{}_{}_{}', self.remove_nonbinary_str, self.augment_binary_str,
-                                  self.include_captions_str, self.cosine_similarity_str)
+        self.uid_str = str.format('{}_{}_{}_{}_{}', self.remove_nonbinary_str, self.augment_binary_str,
+                                  self.include_captions_str, self.cosine_similarity_str, self.image_layer_str)
         self.pickle_uid_str = str.format('{}_{}_{}', self.remove_nonbinary_str, self.augment_binary_str,
                                   self.include_captions_str)
         self.img_feat_file = os.path.join(self.img_data, 'IR_image_features.h5')
