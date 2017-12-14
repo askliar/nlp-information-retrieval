@@ -4,6 +4,7 @@ import torch.optim as optim
 from datasets.dataloaders import DataLoaderFactory
 from model.cbow import CBOW
 from model.checkpointer import save_checkpoint
+from model.rnn_cbow import RNNCBOW
 from model.train import train
 from model.test import test
 from utilities.config import Config
@@ -76,6 +77,7 @@ def main():
     cosine_similarity = str2bool(args.cosine)
     config = Config(include_captions=captions, remove_nonbinary=onlybin, augment_binary=augment,
                     cosine_similarity=cosine_similarity, image_layer=image_layer)
+
     factory = DataLoaderFactory(config)
 
     w2i = defaultdict(lambda: len(w2i))
@@ -135,6 +137,7 @@ def main():
 
         test_time = time.time()
         test_loss, top1, top3, top5 = test(model, image_layer, val_dataloader, config)
+
         model.losses_test.append(test_loss)
         model.top1s.append(top1)
         model.top3s.append(top3)
@@ -142,7 +145,6 @@ def main():
         print('top k accuracies: ', top1, top3, top5)
         print('test loss: ', test_loss)
         print('test time: ', time.time() - test_time)
-
         is_best = top1 > best_top1
         best_top1 = max(top1, best_top1)
         save_checkpoint({
@@ -151,11 +153,8 @@ def main():
             'optimizer': optimizer,
         }, is_best, config)
 
-    torch.cuda.empty_cache()
-    import matplotlib.pyplot as plt
-    # plt.plot(losses)
-    # plt.show()
-
+    if CUDA:
+        torch.cuda.empty_cache()
 
 if __name__ == '__main__':
     main()
