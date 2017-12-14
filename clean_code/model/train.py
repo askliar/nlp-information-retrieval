@@ -17,9 +17,9 @@ def train(model, image_layer, optimizer, loader, config):
     j = 0
     for batch in loader:
         startb = time.time()
-        if j > 2:
-            break
-        j += 1
+        # if j > 2:
+        #     break
+        # j += 1
         text, img_feat, target, sizes = Variable(batch['text']), \
                                         Variable(batch['img_feat']), \
                                         Variable(batch['target']), \

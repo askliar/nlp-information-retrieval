@@ -38,6 +38,7 @@ class TestDataSet(GenericDataSet):
             if is_binary:
                 question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                 question_int = self.text2int(question_preprocessed)
+                self.sentences_histograms[len(question_int)] += 1
                 if self.augment_binary:
                     augmented_question_int = question_int[:-1] + [
                         (self.vocab['no'] if answer == 'yes' else self.vocab['yes'])]
@@ -52,6 +53,7 @@ class TestDataSet(GenericDataSet):
                 else:
                     question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                     question_int = self.text2int(question_preprocessed)
+                    self.sentences_histograms[len(question_int)] += 1
                     questions_int.append(question_int)
         return pad_text(questions_int)
 
