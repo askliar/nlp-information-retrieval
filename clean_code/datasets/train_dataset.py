@@ -6,13 +6,13 @@ from utilities.data_helpers import pad_text
 
 class QuestionsDataSet(GenericDataSet):
     def __init__(self, json_file, pickle_file, img_feat_file, img_map_file,
-                 vocab, vocab_pickle_file, stem=True, stopwords=False, stop_vocab=None, normalize=True,
+                 vocab, vocab_pickle_file, histogram_pickle_file, stem=True, stopwords=False, stop_vocab=None, normalize=True,
                  debug=False, augment_binary=True, remove_nonbinary=True, include_captions=False):
         self.augment_binary = augment_binary
         self.remove_nonbinary = remove_nonbinary
         self.include_captions = include_captions
         super().__init__(json_file, pickle_file, img_feat_file, img_map_file,
-                         vocab, vocab_pickle_file, stem, stopwords, stop_vocab, normalize, debug)
+                         vocab, vocab_pickle_file, histogram_pickle_file, stem, stopwords, stop_vocab, normalize, debug)
 
     def convert_to_int(self, row, stem, stopwords, stop_vocab):
         text_int, target_int = self.convert_question_to_int(row.dialog, stem, stopwords, stop_vocab)
@@ -43,6 +43,7 @@ class QuestionsDataSet(GenericDataSet):
             if is_binary:
                 question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                 question_int = self.text2int(question_preprocessed)
+                self.sentences_histograms[len(question_int)] += 1
                 answer_int = 1 if answer == 'yes' else -1
                 if self.augment_binary:
                     augmented_question_int = question_int[:-1] + [
@@ -61,6 +62,7 @@ class QuestionsDataSet(GenericDataSet):
                 else:
                     question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                     question_int = self.text2int(question_preprocessed)
+                    self.sentences_histograms[len(question_int)] += 1
                     answer_int = 1
                     answers_int.append(answer_int)
                     questions_int.append(question_int)
@@ -69,14 +71,15 @@ class QuestionsDataSet(GenericDataSet):
 
 class CaptionsDataSet(GenericDataSet):
     def __init__(self, json_file, pickle_file, img_feat_file, img_map_file,
-                 vocab, vocab_pickle_file, stem=True, stopwords=False, stop_vocab=None, normalize=True, debug=False):
+                 vocab, vocab_pickle_file,histogram_pickle_file,  stem=True, stopwords=False, stop_vocab=None, normalize=True, debug=False):
         super().__init__(json_file, pickle_file, img_feat_file, img_map_file,
-                         vocab, vocab_pickle_file, stem, stopwords, stop_vocab, normalize, debug)
+                         vocab, vocab_pickle_file, histogram_pickle_file, stem, stopwords, stop_vocab, normalize, debug)
 
     def convert_to_int(self, row, stem, stopwords, stop_vocab):
         text = row.caption
         caption_preprocessed = self.preprocess_text(text, stem, stopwords, stop_vocab)
         text_int = self.text2int(caption_preprocessed)
+        self.sentences_histograms[len(text_int)] += 1
         target = [1]
         if len(text_int) > 0:
             img_id = row.target_img_id

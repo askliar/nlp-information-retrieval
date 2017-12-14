@@ -24,20 +24,17 @@ def main():
     parser.add_argument(
         '--onlybin',
         help='Exclude non-binary questions',
-        type=str,
-        default='True'
+        type=str
     )
     parser.add_argument(
         '--captions',
         help='Include captions.',
-        type=str,
-        default='False'
+        type=str
     )
     parser.add_argument(
         '--augment',
         help='Augment binary questions',
-        type=str,
-        default='True'
+        type=str
     )
     parser.add_argument(
         '--epochs',
@@ -50,12 +47,6 @@ def main():
         help='Whether to use cosine similarity or euclidean distance',
         type=str,
         default='True'
-    )
-    parser.add_argument(
-        '--img_layer',
-        help='type of image layer',
-        type=str,
-        default='None'
     )
     parser.add_argument(
         '--file',
@@ -101,7 +92,7 @@ def main():
     losses_pos = []
 
     for e in range(epochs):
-        print('start of epoch ', e , ' of ' + config.uid_str)
+        print('start of epoch ', e)
 
         start = time.time()
         train_loss, train_loss_pos = train(model, optimizer, questions_dataloader, config)

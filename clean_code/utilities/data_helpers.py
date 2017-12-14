@@ -1,3 +1,5 @@
+import numpy as np
+import matplotlib.pyplot as plt
 import torch
 
 
@@ -87,3 +89,13 @@ def c_fn(batch):
     target = torch.cat(targets, 0)
     size = torch.cat(sizes, 0)
     return {'text': text_tensor, 'img_feat': img_id, 'target': target, 'size': size}
+
+def plot_histogram(histogram_dict):
+    labels, values = zip(*histogram_dict.items())
+
+    indexes = np.arange(len(labels))
+    width = 1
+
+    plt.bar(indexes, values, width)
+    plt.xticks(indexes + width * 0.5, labels)
+    plt.show()
