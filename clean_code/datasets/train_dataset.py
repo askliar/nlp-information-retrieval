@@ -7,10 +7,11 @@ from utilities.data_helpers import pad_text
 class QuestionsDataSet(GenericDataSet):
     def __init__(self, json_file, pickle_file, img_feat_file, img_map_file,
                  vocab, vocab_pickle_file, histogram_pickle_file, stem=True, stopwords=False, stop_vocab=None, normalize=True,
-                 debug=False, augment_binary=True, remove_nonbinary=True, include_captions=False):
+                 debug=False, augment_binary=True, remove_nonbinary=True, include_captions=False, concat=False):
         self.augment_binary = augment_binary
         self.remove_nonbinary = remove_nonbinary
         self.include_captions = include_captions
+        self.concat = concat
         super().__init__(json_file, pickle_file, img_feat_file, img_map_file,
                          vocab, vocab_pickle_file, histogram_pickle_file, stem, stopwords, stop_vocab, normalize, debug)
 
@@ -18,11 +19,16 @@ class QuestionsDataSet(GenericDataSet):
         text_int, target_int = self.convert_question_to_int(row.dialog, stem, stopwords, stop_vocab)
         if self.include_captions:
             caption_int = self.convert_caption_to_int(row.caption, stem, stopwords, stop_vocab)
-            text_int = text_int + [caption_int]
-            target_int = target_int + [1]
+            if self.concat:
+                text_int.expand(caption_int)
+                target_int = [1]
+            else:
+                text_int.append(caption_int)
+                target_int = target_int + [1]
 
         if len(text_int) > 0:
-            text_int = pad_text(text_int)
+            if not self.concat:
+                text_int = pad_text(text_int)
             img_id = row.target_img_id
             target = torch.FloatTensor(target_int)
             text_tensor = torch.LongTensor(text_int)
@@ -52,12 +58,18 @@ class QuestionsDataSet(GenericDataSet):
                         (self.vocab['no'] if answer == 'yes' else self.vocab['yes'])]
                     # BOOKMARK: orig questions
                     augmented_answer_int = -answer_int
-                    answers_int.extend([answer_int, augmented_answer_int])
-                    questions_int.extend([question_int, augmented_question_int])
+                    if self.concat:
+                        questions_int.extend(question_int + augmented_question_int)
+                    else:
+                        answers_int.extend([answer_int, augmented_answer_int])
+                        questions_int.extend([question_int, augmented_question_int])
                     # end of bookmark
                 else:
-                    answers_int.append(answer_int)
-                    questions_int.append(question_int)
+                    if self.concat:
+                        questions_int.extend(question_int)
+                    else:
+                        answers_int.append(answer_int)
+                        questions_int.append(question_int)
             else:
                 if self.remove_nonbinary:
                     continue
@@ -68,9 +80,15 @@ class QuestionsDataSet(GenericDataSet):
                         continue
                     self.sentences_histograms[len(question_int)] += 1
                     answer_int = 1
-                    answers_int.append(answer_int)
-                    questions_int.append(question_int)
-        return pad_text(questions_int), answers_int
+                    if self.concat:
+                        questions_int.extend(question_int)
+                    else:
+                        answers_int.append(answer_int)
+                        questions_int.append(question_int)
+        if self.concat:
+            return questions_int, 1
+        else:
+            return pad_text(questions_int), answers_int
 
 
 class CaptionsDataSet(GenericDataSet):

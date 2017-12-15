@@ -34,7 +34,8 @@ class DataLoaderFactory():
                                                 stopwords=True, stop_vocab=self.config.stop, debug=self.config.DEBUG,
                                                 augment_binary=self.config.augment_binary,
                                                 remove_nonbinary=self.config.remove_nonbinary,
-                                                include_captions=self.config.include_captions)
+                                                include_captions=self.config.include_captions,
+                                                concat=self.config.concat)
 
         dataloader_train_questions = DataLoader(data_train_questions, batch_size=self.config.questions_batch_size,
                                                 shuffle=True, num_workers=4, pin_memory=self.config.CUDA,
@@ -51,7 +52,8 @@ class DataLoaderFactory():
                                stopwords=True,
                                stop_vocab=self.config.stop, debug=self.config.DEBUG,
                                augment_binary=self.config.augment_binary,
-                               remove_nonbinary=self.config.remove_nonbinary)
+                               remove_nonbinary=self.config.remove_nonbinary,
+                               concat=self.config.concat)
 
         dataloader_val = DataLoader(data_val, batch_size=self.config.val_batch_size,
                                     shuffle=True, num_workers=4, pin_memory=self.config.CUDA,
@@ -68,7 +70,8 @@ class DataLoaderFactory():
                                 stopwords=True,
                                 stop_vocab=self.config.stop, debug=self.config.DEBUG,
                                 augment_binary=self.config.augment_binary,
-                                remove_nonbinary=self.config.remove_nonbinary)
+                                remove_nonbinary=self.config.remove_nonbinary,
+                                concat=self.config.concat)
 
         dataloader_test = DataLoader(data_test, batch_size=self.config.test_batch_size,
                                      shuffle=True, num_workers=4, pin_memory=self.config.CUDA,

@@ -7,16 +7,20 @@ from utilities.data_helpers import pad_text
 class TestDataSet(GenericDataSet):
     def __init__(self, json_file, pickle_file, img_feat_file, img_map_file,
                  vocab, vocab_pickle_file, histogram_pickle_file, stem=True, stopwords=False, stop_vocab=None, normalize=True,
-                 debug=False, augment_binary=False, remove_nonbinary=True):
+                 debug=False, augment_binary=False, remove_nonbinary=True, concat=False):
         self.augment_binary = augment_binary
         self.remove_nonbinary = remove_nonbinary
+        self.concat = concat
         super().__init__(json_file, pickle_file, img_feat_file, img_map_file,
                          vocab, vocab_pickle_file, histogram_pickle_file, stem, stopwords, stop_vocab, normalize, debug)
 
     def convert_to_int(self, row, stem, stopwords, stop_vocab):
         questions_int = self.convert_question_to_int(row.dialog, stem, stopwords, stop_vocab)
         caption_int = self.convert_caption_to_int(row.caption, stem, stopwords, stop_vocab)
-        text_int = pad_text(questions_int + [caption_int])
+        if self.concat:
+            text_int = questions_int.extend(caption_int)
+        else:
+            text_int = pad_text(questions_int + [caption_int])
         img_id = row.img_list
         target = [row.target]
         if len(text_int) > 0:
@@ -43,10 +47,16 @@ class TestDataSet(GenericDataSet):
                     augmented_question_int = question_int[:-1] + [
                         (self.vocab['no'] if answer == 'yes' else self.vocab['yes'])]
                     # BOOKMARK: orig questions
-                    questions_int.extend([question_int, augmented_question_int])
+                    if self.concat:
+                        questions_int.extend(question_int + augmented_question_int)
+                    else:
+                        questions_int.extend([question_int, augmented_question_int])
                     # end of bookmark
                 else:
-                    questions_int.append(question_int)
+                    if self.concat:
+                        questions_int.extend(question_int)
+                    else:
+                        questions_int.append(question_int)
             else:
                 if self.remove_nonbinary:
                     continue
@@ -54,8 +64,14 @@ class TestDataSet(GenericDataSet):
                     question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                     question_int = self.text2int(question_preprocessed)
                     self.sentences_histograms[len(question_int)] += 1
-                    questions_int.append(question_int)
-        return pad_text(questions_int)
+                    if self.concat:
+                        questions_int.expand(question_int)
+                    else:
+                        questions_int.append(question_int)
+        if self.concat: #add rnn1
+            return questions_int
+        else:
+           return pad_text(questions_int)
 
     def imgids2imgs(self, img_id_arr):
         imgs = []
