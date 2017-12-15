@@ -45,33 +45,44 @@ def train(model, image_layer, optimizer, loader, config):
         device = 0
         show_memusage(device=device)
         optimizer.zero_grad()
-        text_prediction = model(text, sizes)
+        if config.collapse:
+            text_prediction = model(text, sizes)
+        else:
+            text_prediction = model(text)
         img_prediction = img_feat
         if image_layer != None:
             img_prediction = image_layer(img_feat)
 
         if config.sequential:
-            pass
-
-        else:
-
-            # st = time.time()
-            if config.collapse:
-                idx = torch.LongTensor([x for x in range(sizes.size(0))])
-            else:
-                idx = torch.LongTensor([x for x in range(sizes.size(0)) for kk in range(sizes[x])])
-            # print('timeee -- ', time.time() - st)
+            print('we')
+            maxlen = torch.max(sizes)
+            reshaped_tensor = torch.zeros(maxlen, sizes.size(0), -1)
             if CUDA:
-                idx = idx.cuda()
-            if config.cosine_similarity:
-                distances = F.cosine_similarity(text_prediction, img_prediction[idx])
-            else:
-                distances = F.pairwise_distance(text_prediction, img_prediction[idx])
+                reshaped_tensor = reshaped_tensor.cuda()
+            tot_idx = 0
+            # for i, size in enumerate(sizes):
+            #     reshaped_tensor[:, i, :] = F.pad(text_prediction[tot_idx:tot_idx + size], (0, 0, 0, maxlen - size), 'constant', 0)
+            #     tot_idx += size
+            # max_batch_len = torch.
 
-            if config.collapse:
-                loss = distances.mean()
-            else:
-                loss = (distances * target).mean()
+
+        # st = time.time()
+        if config.collapse:
+            idx = torch.LongTensor([x for x in range(sizes.size(0))])
+        else:
+            idx = torch.LongTensor([x for x in range(sizes.size(0)) for kk in range(sizes[x])])
+        # print('timeee -- ', time.time() - st)
+        if CUDA:
+            idx = idx.cuda()
+        if config.cosine_similarity:
+            distances = F.cosine_similarity(text_prediction, img_prediction[idx])
+        else:
+            distances = F.pairwise_distance(text_prediction, img_prediction[idx])
+
+        if config.collapse:
+            loss = distances.mean()
+        else:
+            loss = (distances * target).mean()
 
         train_loss += loss.data[0]
         # print(train_loss[0])
