@@ -15,11 +15,10 @@ def test(model, image_layer, loader, config):
     top5 = 0
     hist = torch.zeros(10)
     for j, batch in enumerate(loader):
-
-        text, img_feat, target, sizes = Variable(batch['text']), \
+        sizes = batch['size']
+        text, img_feat, target = Variable(batch['text']), \
                                         Variable(batch['img_feat']), \
-                                        Variable(batch['target']), \
-                                        Variable(batch['size'])
+                                        Variable(batch['target'])
         if CUDA:
             text, img_feat, target, sizes = text.cuda(), \
                                             img_feat.cuda(), \
@@ -45,7 +44,7 @@ def test(model, image_layer, loader, config):
             xp += torch.sum(img_prediction * img_prediction, 1).expand(xp.size())
 
         # print(text.size(), img_prediction.size(), target.size(), sizes.size())
-        for i, size in enumerate(sizes.data):
+        for i, size in enumerate(sizes):
             # print(img_prediction.size(0))
             # if img_prediction.size(0) == 10:
             if cosine_similarity:

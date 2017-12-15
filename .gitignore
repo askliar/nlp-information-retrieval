@@ -8,6 +8,7 @@ __pycache__/
 **/results/
 **/data/
 *.pth
+**/data_aws/
 
 # Distribution / packaging
 .Python

@@ -6,7 +6,7 @@ from utilities.nltk_helpers import stop
 
 class Config():
     def __init__(self, remove_nonbinary=True, include_captions=False, augment_binary=True, cosine_similarity=True,
-                 image_layer='None'):
+                 image_layer='None', projection='CBOW', sequential=False, collapse=False):
         self.DEBUG = False
         self.CUDA = torch.cuda.is_available()
 
@@ -35,7 +35,16 @@ class Config():
         self.cosine_similarity = cosine_similarity
         self.cosine_similarity_str = 'cosine' if self.cosine_similarity else 'euclidean'
 
-        self.uid_str = str.format('{}_{}_{}_{}_{}', self.remove_nonbinary_str, self.augment_binary_str,
+        self.sequential = sequential
+        self.sequential_str = 'sequential' if sequential else 'individual'
+
+        self.collapse = collapse
+        self.collapse_str = 'collapse' if collapse else 'individual'
+
+        self.projection = projection
+        self.projection_str = self.projection
+
+        self.uid_str = str.format('{}_{}_{}_{}_{}_{}', self.projection, self.remove_nonbinary_str, self.augment_binary_str,
                                   self.include_captions_str, self.cosine_similarity_str, self.image_layer_str)
         self.pickle_uid_str = str.format('{}_{}_{}', self.remove_nonbinary_str, self.augment_binary_str,
                                          self.include_captions_str)

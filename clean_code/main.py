@@ -3,8 +3,8 @@ import torch.optim as optim
 
 from datasets.dataloaders import DataLoaderFactory
 from model.cbow import CBOW
+from model.rnn1 import RNN1
 from model.checkpointer import save_checkpoint
-from model.rnn_cbow import RNNCBOW
 from model.train import train
 from model.test import test
 from utilities.config import Config
@@ -63,11 +63,31 @@ def main():
         default='None'
     )
     parser.add_argument(
+        '--projection',
+        help='whether use CBOW or RNN for word concatenation',
+        type=str,
+        default='CBOW'
+    )
+    parser.add_argument(
+        '--sequential',
+        help='use CBOW or RNN for word concatenation',
+        type=str,
+        default='False' # or sequential
+    )
+    parser.add_argument(
+        '--collapse',
+        help='whether to consider all text as one',
+        type=str,
+        default='False'  # or sequential
+    )
+    parser.add_argument(
         '--file',
         help='Path of a model',
         type=str,
         default=None
     )
+
+
     args = parser.parse_args()
     onlybin = str2bool(args.onlybin)
     captions = str2bool(args.captions)
@@ -75,9 +95,12 @@ def main():
     epochs = args.epochs
     image_layer = args.image_layer
     cosine_similarity = str2bool(args.cosine)
+    projection = args.projection
+    sequential = str2bool(args.sequential)
+    collapse = str2bool(args.collapse)
     config = Config(include_captions=captions, remove_nonbinary=onlybin, augment_binary=augment,
-                    cosine_similarity=cosine_similarity, image_layer=image_layer)
-
+                    cosine_similarity=cosine_similarity, image_layer=image_layer, projection=projection,
+                    sequential=sequential, collapse=collapse)
     factory = DataLoaderFactory(config)
 
     w2i = defaultdict(lambda: len(w2i))
@@ -98,13 +121,17 @@ def main():
     # test_dataset, test_dataloader = factory.generate_test_dataset(w2i)
 
     CUDA = config.CUDA
+    if config.projection == 'CBOW':
+        model = CBOW(vocab_size=len(w2i), img_feat_size=2048, target_size=2048, CUDA=CUDA)
+    elif config.projection == 'RNN1':
+        model = RNN1(vocab_size=len(w2i), img_feat_size=2048, target_size=2048, CUDA=CUDA)
 
-    model = RNNCBOW(vocab_size=len(w2i), img_feat_size=2048)
+
     image_layer = None
     if config.image_layer == 'mlp1':
-        image_layer = MLP1(2048, 2048)
+        image_layer = MLP1(input_size=2048, output_size=2048)
     elif config.image_layer == 'mlp2':
-        image_layer = MLP2(2048, 2048, 2048)
+        image_layer = MLP2(input_size=2048, hidden_size=2048, output_size=2048)
 
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
@@ -137,7 +164,6 @@ def main():
 
         test_time = time.time()
         test_loss, top1, top3, top5 = test(model, image_layer, val_dataloader, config)
-
         model.losses_test.append(test_loss)
         model.top1s.append(top1)
         model.top3s.append(top3)
@@ -145,6 +171,7 @@ def main():
         print('top k accuracies: ', top1, top3, top5)
         print('test loss: ', test_loss)
         print('test time: ', time.time() - test_time)
+
         is_best = top1 > best_top1
         best_top1 = max(top1, best_top1)
         save_checkpoint({
@@ -153,8 +180,11 @@ def main():
             'optimizer': optimizer,
         }, is_best, config)
 
-    if CUDA:
-        torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
+    import matplotlib.pyplot as plt
+    # plt.plot(losses)
+    # plt.show()
+
 
 if __name__ == '__main__':
     main()
