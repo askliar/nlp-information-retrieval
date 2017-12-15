@@ -99,7 +99,7 @@ def main():
 
     CUDA = config.CUDA
 
-    model = CBOW(vocab_size=len(w2i), img_feat_size=2048)
+    model = RNNCBOW(vocab_size=len(w2i), img_feat_size=2048)
     image_layer = None
     if config.image_layer == 'mlp1':
         image_layer = MLP1(2048, 2048)
