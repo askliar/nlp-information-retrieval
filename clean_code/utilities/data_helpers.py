@@ -5,6 +5,8 @@ import torch
 
 def pad_text(text):
     max_len = 0
+    if type(text) == int:
+        text = [text]
     for sentence in text:
         max_len = max(max_len, len(sentence))
     resulting_questions = [sentence + ([0] * (max_len - len(sentence))) for sentence in text]

@@ -6,14 +6,14 @@ from utilities.nltk_helpers import stop
 
 class Config():
     def __init__(self, remove_nonbinary=True, include_captions=False, augment_binary=True, cosine_similarity=True,
-                 image_layer='None', projection='CBOW', sequential=False, concat=False):
+                 image_layer='None', projection='CBOW', sequential=False, concat=False, batch_size=256, test_batch_size=32):
         self.DEBUG = False
         self.CUDA = torch.cuda.is_available()
 
-        self.captions_batch_size = 64
-        self.questions_batch_size = 64
-        self.val_batch_size = 8
-        self.test_batch_size = 8
+        self.captions_batch_size = batch_size
+        self.questions_batch_size = batch_size
+        self.val_batch_size = test_batch_size
+        self.test_batch_size = test_batch_size
         self.stopwords = True
         self.stop = stop
 
@@ -22,6 +22,19 @@ class Config():
         self.img_data = 'data/img_data'
         self.text_data = 'data/text_data'
         self.complexity = 'easy'
+        # losses: -11.51617859909311 - 12.884004095918499
+        # time
+        # epoch
+        # 0  ->  81.26553654670715
+        # top
+        # k
+        # accuracies: 0.8154
+        # 0.9434
+        # 0.9798
+        # test
+        # loss: -1.0962858544766902
+        # test
+        # time: 7.104407787322998
 
         self.image_layer = image_layer
         self.image_layer_str = 'simple' if self.image_layer == 'None' else self.image_layer
@@ -44,11 +57,11 @@ class Config():
         self.projection = projection
         self.projection_str = self.projection
 
-        self.uid_str = str.format('{}_{}_{}_{}_{}_{}_{}_{}', self.sequential, self.concat, self.projection,
+        self.uid_str = str.format('{}_{}_{}_{}_{}_{}_{}_{}_{}', self.sequential_str, self.concat_str, self.projection_str,
                                   self.remove_nonbinary_str, self.augment_binary_str, self.include_captions_str,
-                                  self.cosine_similarity_str, self.image_layer_str)
+                                  self.cosine_similarity_str, self.image_layer_str, str(batch_size))
         self.pickle_uid_str = str.format('{}_{}_{}_{}', self.remove_nonbinary_str, self.augment_binary_str,
-                                         self.include_captions_str, self.concat)
+                                         self.include_captions_str, self.concat_str)
 
         self.save_path_latest = str.format('data/{}/checkpoint_latest.pth.tar', self.uid_str)
         self.save_path_best = str.format('data/{}/checkpoint_best.pth.tar', self.uid_str)

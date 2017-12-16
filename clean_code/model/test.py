@@ -2,6 +2,9 @@ import time
 import torch
 from torch.autograd import Variable
 
+from utilities.memtest import show_memusage
+import torch.nn.functional as F
+
 def test(model, image_layer, loader, config):
     CUDA = config.CUDA
     cosine_similarity = config.cosine_similarity
@@ -25,6 +28,8 @@ def test(model, image_layer, loader, config):
                                             target.cuda(), \
                                             sizes.cuda()
         text_prediction = model(text)
+        # device = 0
+        # show_memusage(device=device)
         img_prediction = img_feat
         if image_layer != None:
             img_prediction = image_layer(img_feat)
@@ -63,9 +68,18 @@ def test(model, image_layer, loader, config):
             N += 1
             total_idx += size
             img_total_idx += img_prediction.size(0)
+
+
     # print(hist)
     test_loss /= N
     top1 /= N
     top3 /= N
     top5 /= N
     return test_loss, top1, top3, top5
+
+#
+# losses:  5910.962474822998 9913.569972991943
+# time epoch  0  ->  84.74075937271118
+# top k accuracies:  0.2798 0.5296 0.6918
+# test loss:  1488.9711460693359
+# test time:  17.264331817626953

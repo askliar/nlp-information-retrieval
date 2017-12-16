@@ -8,7 +8,7 @@ from model.checkpointer import save_checkpoint
 from model.train import train
 from model.test import test
 from utilities.config import Config
-
+import numpy as np
 import torch
 import time
 
@@ -75,10 +75,22 @@ def main():
         default='False' # or sequential
     )
     parser.add_argument(
-        '--collapse',
+        '--concat',
         help='whether to consider all text as one',
         type=str,
         default='False'  # or sequential
+    )
+    parser.add_argument(
+        '--batch_size',
+        help='batch size',
+        type=int,
+        default=64  # or sequential
+    )
+    parser.add_argument(
+        '--test_batch_size',
+        help='test_batch size',
+        type=int,
+        default=32  # or sequential
     )
     parser.add_argument(
         '--file',
@@ -97,10 +109,12 @@ def main():
     cosine_similarity = str2bool(args.cosine)
     projection = args.projection
     sequential = str2bool(args.sequential)
-    collapse = str2bool(args.collapse)
+    concat = str2bool(args.concat)
+    batch_size = int(args.batch_size)
+    test_batch_size = int(args.test_batch_size)
     config = Config(include_captions=captions, remove_nonbinary=onlybin, augment_binary=augment,
                     cosine_similarity=cosine_similarity, image_layer=image_layer, projection=projection,
-                    sequential=sequential, collapse=collapse)
+                    sequential=sequential, concat=concat, batch_size=batch_size, test_batch_size=test_batch_size)
     factory = DataLoaderFactory(config)
 
     w2i = defaultdict(lambda: len(w2i))
@@ -122,18 +136,19 @@ def main():
 
     CUDA = config.CUDA
     if config.projection == 'CBOW':
-        model = CBOW(vocab_size=len(w2i), img_feat_size=2048, target_size=2048, CUDA=CUDA)
+        model = CBOW(vocab_size=len(w2i), img_feat_size=1024, target_size=1024, CUDA=CUDA)
     elif config.projection == 'RNN1':
-        model = RNN1(vocab_size=len(w2i), img_feat_size=2048, target_size=2048, CUDA=CUDA)
+        model = RNN1(vocab_size=len(w2i), img_feat_size=1024, target_size=1024, CUDA=CUDA)
 
 
     image_layer = None
     if config.image_layer == 'mlp1':
-        image_layer = MLP1(input_size=2048, output_size=2048)
+        image_layer = MLP1(input_size=2048, output_size=1024)
     elif config.image_layer == 'mlp2':
-        image_layer = MLP2(input_size=2048, hidden_size=2048, output_size=2048)
+        image_layer = MLP2(input_size=2048, hidden_size=1024, output_size=1024)
 
-    optimizer = optim.Adam(model.parameters(), lr=0.0001)
+    lr_mult = 1 if config.cosine_similarity else 10
+    optimizer = optim.Adam(model.parameters(), lr=0.00001 * lr_mult)
 
     # model = torch.load('../results/checkpoint_22')
     # test(model, dataloader_val)
@@ -151,9 +166,10 @@ def main():
         start = time.time()
         train_loss, train_loss_pos = train(model, image_layer, optimizer, questions_dataloader, config)
 
-        # if e < 5:
-        #     for param_group in optimizer.param_groups:
-        #         param_group['lr'] *= np.float_power(5, 1 / 5)
+        if config.captions_batch_size > 256:
+            if e < 5:
+                for param_group in optimizer.param_groups:
+                    param_group['lr'] *= np.float_power(5, 1 / 5)
 
         print('losses: ', train_loss, train_loss_pos)
         losses.append(train_loss)
@@ -161,6 +177,9 @@ def main():
         model.losses = losses
         model.losses_pos = losses_pos
         print('time epoch ', e, ' -> ', time.time() - start)
+
+        # torch.cuda.synchronize()
+        # torch.cuda.empty_cache()
 
         test_time = time.time()
         test_loss, top1, top3, top5 = test(model, image_layer, val_dataloader, config)
@@ -179,8 +198,11 @@ def main():
             'model': model,
             'optimizer': optimizer,
         }, is_best, config)
+        # torch.cuda.synchronize()
+        # torch.cuda.empty_cache()
 
-    torch.cuda.empty_cache()
+    # torch.cuda.synchronize()
+    # torch.cuda.empty_cache()
     import matplotlib.pyplot as plt
     # plt.plot(losses)
     # plt.show()

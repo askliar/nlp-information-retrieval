@@ -431,7 +431,7 @@ if __name__ == "__main__":
         pass
 
 
-    model = CBOW(vocab_size=len(w2i), img_feat_size=2048)
+    model = CBOW(vocab_size=len(w2i), img_feat_size=1024)
     optimizer = optim.Adam(model.parameters(), lr=0.000001)
 
     # train(model, dataloader_train_captions, 2)

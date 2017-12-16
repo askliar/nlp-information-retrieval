@@ -16,20 +16,20 @@ class CBOW(nn.Module):
         self.CUDA = CUDA
         self.img_feat_size = img_feat_size
 
-    def forward(self, input_text, sizes=None):
+    def forward(self, input_text):
         input_text = input_text.view(input_text.size(0), -1)
         x = self.embeddings(input_text)
         x = torch.sum(x, 1)
         # for loop
-        if sizes is not None:
-            question_sets_amount = sizes.size(0)
-            x_temp = Variable(torch.zeros((question_sets_amount, self.img_feat_size)))
-            if self.CUDA:
-                x_temp = x_temp.cuda()
-            idx = 0
-            for i in range(question_sets_amount):
-                x_temp[i] = torch.sum(x[idx:idx + sizes[i], :], 0)
-                idx += sizes[i]
-            x = x_temp
+            # if sizes is not None:
+            #     question_sets_amount = sizes.size(0)
+            #     x_temp = Variable(torch.zeros((question_sets_amount, self.img_feat_size)))
+            #     if self.CUDA:
+            #         x_temp = x_temp.cuda()
+            #     idx = 0
+            #     for i in range(question_sets_amount):
+            #         x_temp[i] = torch.sum(x[idx:idx + sizes[i], :], 0)
+            #         idx += sizes[i]
+            #     x = x_temp
         x = self.proj(F.selu(x))
         return x

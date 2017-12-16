@@ -18,7 +18,7 @@ class TestDataSet(GenericDataSet):
         questions_int = self.convert_question_to_int(row.dialog, stem, stopwords, stop_vocab)
         caption_int = self.convert_caption_to_int(row.caption, stem, stopwords, stop_vocab)
         if self.concat:
-            text_int = questions_int.extend(caption_int)
+            text_int = questions_int + caption_int
         else:
             text_int = pad_text(questions_int + [caption_int])
         img_id = row.img_list
@@ -65,7 +65,7 @@ class TestDataSet(GenericDataSet):
                     question_int = self.text2int(question_preprocessed)
                     self.sentences_histograms[len(question_int)] += 1
                     if self.concat:
-                        questions_int.expand(question_int)
+                        questions_int.extend(question_int)
                     else:
                         questions_int.append(question_int)
         if self.concat: #add rnn1

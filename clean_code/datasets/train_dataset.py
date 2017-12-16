@@ -20,7 +20,7 @@ class QuestionsDataSet(GenericDataSet):
         if self.include_captions:
             caption_int = self.convert_caption_to_int(row.caption, stem, stopwords, stop_vocab)
             if self.concat:
-                text_int.expand(caption_int)
+                text_int.extend(caption_int)
                 target_int = [1]
             else:
                 text_int.append(caption_int)
