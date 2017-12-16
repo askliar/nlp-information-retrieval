@@ -84,17 +84,17 @@ def test(model, image_layer, loader, config):
 # top k accuracies:  0.2798 0.5296 0.6918
 # test loss:  1488.9711460693359
 # test time:  17.264331817626953
-
-
-if config.concat:
-    # if cosine_similarity:
-    scores = xp[i, i * 10:i * 10 + 10].data
-    # else:
-    #     scores = torch.sqrt(xp[i, i*10:i*10+10]).data
-else:
-    # if cosine_similarity:
-    # scores = xp[total_idx:total_idx + size, img_total_idx:img_total_idx+img_prediction.size(0)].sum(0).data
-    scores = xp[total_idx:total_idx + size, i * 10:i * 10 + 10].sum(0).data
-    # else:
-    # scores = torch.sqrt(xp[total_idx:total_idx+size, img_total_idx:img_total_idx+img_prediction.size(0)]).sum(0).data
-    # scores = (xp[total_idx:total_idx+size, i*10:i*10+10]).sum(0).data
+#
+#
+# if config.concat:
+#     # if cosine_similarity:
+#     scores = xp[i, i * 10:i * 10 + 10].data
+#     # else:
+#     #     scores = torch.sqrt(xp[i, i*10:i*10+10]).data
+# else:
+#     # if cosine_similarity:
+#     # scores = xp[total_idx:total_idx + size, img_total_idx:img_total_idx+img_prediction.size(0)].sum(0).data
+#     scores = xp[total_idx:total_idx + size, i * 10:i * 10 + 10].sum(0).data
+#     # else:
+#     # scores = torch.sqrt(xp[total_idx:total_idx+size, img_total_idx:img_total_idx+img_prediction.size(0)]).sum(0).data
+#     # scores = (xp[total_idx:total_idx+size, i*10:i*10+10]).sum(0).data
