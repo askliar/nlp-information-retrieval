@@ -11,7 +11,7 @@ from utilities.config import Config
 import numpy as np
 import torch
 import time
-
+import pickle
 from model.image_layers import MLP1, MLP2
 from utilities.data_helpers import plot_histogram
 
@@ -166,10 +166,10 @@ def main():
         start = time.time()
         train_loss, train_loss_pos = train(model, image_layer, optimizer, questions_dataloader, config)
 
-        if config.captions_batch_size > 256:
-            if e < 5:
-                for param_group in optimizer.param_groups:
-                    param_group['lr'] *= np.float_power(5, 1 / 5)
+        # if config.captions_batch_size > 256:
+        #     if e < 5:
+        #         for param_group in optimizer.param_groups:
+        #             param_group['lr'] *= np.float_power(5, 1 / 5)
 
         print('losses: ', train_loss, train_loss_pos)
         losses.append(train_loss)
@@ -198,6 +198,9 @@ def main():
             'model': model,
             'optimizer': optimizer,
         }, is_best, config)
+
+        plot_list = [model.losses, model.losses_pos, model.losses_test, model.top1s, model.top3s, model.top5s]
+        pickle.dump(plot_list, open(str.format('data/{}/plot_list.pkl', config.uid_str), 'wb'))
         # torch.cuda.synchronize()
         # torch.cuda.empty_cache()
 
