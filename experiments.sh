@@ -41,3 +41,4 @@ python clean_code/main.py  --onlybin False --captions True --augment True --epoc
 python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine True --projection RNN1  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 &&
 
 python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine True --projection RNN1  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 &&
+echo 'End'
