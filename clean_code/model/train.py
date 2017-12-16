@@ -35,9 +35,9 @@ def train(model, image_layer, optimizer, loader, config):
     j = 0
     for batch in loader:
         startb = time.time()
-        if j > 20:
-            break
-        j += 1
+        # if j > 20:
+        #     break
+        # j += 1
 
         # exclude sizes->Variable conversion, because we don't use it for backpropagation
         sizes = batch['size']
