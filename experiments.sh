@@ -1,49 +1,43 @@
-#python clean_code/main.py  --onlybin False --captions False --augment False --epochs 50 --cosine True --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32 &&
-
-#vary augment
-#python clean_code/main.py  --onlybin False --captions False --augment True --epochs 50 --cosine True --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32  &&
-
-#vary concat
-#python clean_code/main.py  --onlybin False --captions False --augment False --epochs 50 --cosine True --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32   &&
-
-#python clean_code/main.py  --onlybin False --captions False --augment True --epochs 50 --cosine True --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32   &&
-
-# change to euclidean
-python clean_code/main.py  --onlybin False --captions False --augment False --epochs 50 --cosine False --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32   &&
-
-#vary augment
-python clean_code/main.py  --onlybin False --captions False --augment True --epochs 50 --cosine False --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32   && 
-
+epochs=1
+#baseline
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine True --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 &&
+python clean_code/main.py  --onlybin False --captions True --augment True --epochs $epochs --cosine True --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 &&
 
 #vary concat
-python clean_code/main.py  --onlybin False --captions False --augment False --epochs 50 --cosine False --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32   && 
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine True --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2   &&
 
-python clean_code/main.py  --onlybin False --captions False --augment True --epochs 50 --cosine False --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32   && 
+python clean_code/main.py  --onlybin False --captions True --augment True --epochs $epochs --cosine True --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2   &&
 
+#same for mse
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine False --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 &&
+python clean_code/main.py  --onlybin False --captions True --augment True --epochs $epochs --cosine False --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 &&
 
-#rnns
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine False --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2   &&
 
-
-#python clean_code/main.py  --onlybin False --captions False --augment False --epochs 50 --cosine True --projection RNN1  --concat True --sequential False --batch_size 1024 --test_batch_size 32 &&
-
-#python clean_code/main.py  --onlybin False --captions False --augment True --epochs 50 --cosine True --projection RNN1  --concat True --sequential False --batch_size 1024 --test_batch_size 32 &&
-
-
+python clean_code/main.py  --onlybin False --captions True --augment True --epochs $epochs --cosine False --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2   &&
 
 
+# hard difficulty
+#baseline
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine True --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 --complexity hard &&
+python clean_code/main.py  --onlybin False --captions True --augment True --epochs $epochs --cosine True --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 --complexity hard &&
 
-#eucl
+#vary concat
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine True --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 --complexity hard &&
 
-python clean_code/main.py  --onlybin False --captions False --augment False --epochs 50 --cosine False --projection RNN1  --concat True --sequential False --batch_size 1024 --test_batch_size 32   &&
+python clean_code/main.py  --onlybin False --captions True --augment True --epochs $epochs --cosine True --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2  --complexity hard &&
 
-python clean_code/main.py  --onlybin False --captions False --augment True --epochs 50 --cosine False --projection RNN1  --concat True --sequential False --batch_size 1024 --test_batch_size 32   && 
+#same for mse
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine False --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 --complexity hard &&
+python clean_code/main.py  --onlybin False --captions True --augment True --epochs $epochs --cosine False --projection CBOW  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 --complexity hard &&
 
-python clean_code/main.py  --onlybin False --captions False --augment False --epochs 50 --cosine False --projection RNN1  --concat False --sequential False --batch_size 1024 --test_batch_size 32   && 
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine False --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2  --complexity hard &&
 
-python clean_code/main.py  --onlybin False --captions False --augment True --epochs 50 --cosine False --projection RNN1  --concat False --sequential False --batch_size 1024 --test_batch_size 32 && 
+python clean_code/main.py  --onlybin False --captions True --augment True --epochs $epochs --cosine False --projection CBOW  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2  --complexity hard &&
 
 
-#long boi
-#python clean_code/main.py  --onlybin False --captions False --augment False --epochs 50 --cosine True --projection RNN1  --concat False --sequential False --batch_size 512 --test_batch_size 32  &&
+# R U NAN
 
-#python clean_code/main.py  --onlybin False --captions False --augment True --epochs 50 --cosine True --projection RNN1  --concat False --sequential False --batch_size 256 --test_batch_size 32  
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine True --projection RNN1  --concat True --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 &&
+
+python clean_code/main.py  --onlybin False --captions True --augment False --epochs $epochs --cosine True --projection RNN1  --concat False --sequential False --batch_size 1024 --test_batch_size 32 --image_layer mlp2 &&

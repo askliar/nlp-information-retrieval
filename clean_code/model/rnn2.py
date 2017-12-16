@@ -10,7 +10,7 @@ class RNN2(nn.Module):
         self.losses_pos = []
         self.top1s, self.top3s, self.top5s = [], [], []
         self.losses_test = []
-        self.rnn = nn.RNN(input_size=input_size, hidden_size=hidden_size, nonlinearity='relu')
+        self.rnn = nn.GRU(input_size=input_size, hidden_size=hidden_size)
         self.proj = nn.Linear(hidden_size, target_size)
         self.CUDA = CUDA
         self.input_size = input_size

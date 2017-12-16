@@ -54,10 +54,19 @@ def test(model, image_layer, loader, config):
 
         for i, size in enumerate(sizes):
             # if img_prediction.size(0) == 10:
+            # print(size, img_prediction.size())
             if config.concat:
-                scores = xp[i, i*10:i*10+10].data
+                if cosine_similarity:
+                    scores = xp[i, i * 10:i * 10 + 10].data
+                else:
+                    scores = (1 / img_prediction.size(1)) * (xp[i, i*10:i*10+10]).data
             else:
-                scores = xp[total_idx:total_idx + size, i*10:i*10+10].sum(0).data
+                if cosine_similarity:
+                    # scores = xp[total_idx:total_idx + size, img_total_idx:img_total_idx+img_prediction.size(0)].sum(0).data
+                    scores = xp[total_idx:total_idx + size, i * 10:i * 10 + 10].sum(0).data
+                else:
+                # scores = torch.sqrt(xp[total_idx:total_idx+size, img_total_idx:img_total_idx+img_prediction.size(0)]).sum(0).data
+                    scores = (1 / img_prediction.size(1)) * (xp[total_idx:total_idx+size, i*10:i*10+10]).sum(0).data
             test_loss += scores[target.data[i]]
             if len(target.size()) > 1:
                 target = target.view(-1)

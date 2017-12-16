@@ -25,7 +25,8 @@ def train(model, image_layer, optimizer, loader, config):
     CUDA = config.CUDA
     rnn2 = None
     if config.sequential:
-        rnn2 = RNN2(2048, 2048, 2048, CUDA)
+        num_feat = 2048 if image_layer == None else 512
+        rnn2 = RNN2(num_feat, num_feat, num_feat, CUDA)
         if CUDA:
             rnn2 = rnn2.cuda()
 
@@ -35,9 +36,9 @@ def train(model, image_layer, optimizer, loader, config):
     j = 0
     for batch in loader:
         startb = time.time()
-        # if j > 20:
-        #     break
-        # j += 1
+        if j > 2:
+            break
+        j += 1
 
         # exclude sizes->Variable conversion, because we don't use it for backpropagation
         sizes = batch['size']
@@ -61,10 +62,10 @@ def train(model, image_layer, optimizer, loader, config):
             img_prediction = image_layer(img_feat)
 
         if config.sequential:
-            print('we')
+            # print('we')
             maxlen = torch.max(sizes)
-            print(sizes.size())
-            reshaped_tensor = Variable(torch.zeros(maxlen, sizes.size(0), 2048).cuda())
+            # print(sizes.size())
+            reshaped_tensor = Variable(torch.zeros(maxlen, sizes.size(0), num_feat).cuda())
             if CUDA:
                 reshaped_tensor = reshaped_tensor.cuda()
             tot_idx = 0
@@ -79,18 +80,19 @@ def train(model, image_layer, optimizer, loader, config):
                         # loss = cosine_similarity(out[:size, i], img_prediction[i]).sum()
                         loss = F.cosine_similarity(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
                     else:
-                        # loss = mean_squared_error(out[:size, i], img_prediction[i]).sum()
-                        loss = F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size,img_prediction.size(1))).sum()
+                        # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
+                        # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
+                        loss = (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size,img_prediction.size(1))), 2).sum()
                 else:
                     if config.cosine_similarity:
                         # loss += cosine_similarity(out[:size, i], img_prediction[i]).sum()
                         loss += F.cosine_similarity(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
                     else:
-                        # loss += mean_squared_error(out[:size, i], img_prediction[i]).sum()
-                        loss += F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size,img_prediction.size(1))).sum()
+                        # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
+                        loss += (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size,img_prediction.size(1))), 2).sum()
 
             loss = loss / sizes.size(0)
-            print(loss)
+            # print(loss)
             train_loss += loss.data[0]
             positive += 0.0
 
@@ -105,8 +107,8 @@ def train(model, image_layer, optimizer, loader, config):
             if config.cosine_similarity:
                 distances = F.cosine_similarity(text_prediction, img_prediction[idx])
             else:
-                distances = F.pairwise_distance(text_prediction, img_prediction[idx])
-
+                distances = (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(text_prediction, img_prediction[idx]), 2)
+                # print(we)
             if config.concat:
                 loss = distances.mean()
             else:
@@ -119,3 +121,10 @@ def train(model, image_layer, optimizer, loader, config):
         optimizer.step()
 
     return train_loss, positive, train_loss / n_batches, positive / n_batches
+
+
+# losses:  -96.9994621354133 206.41716721305846
+# time epoch  0  ->  39.0826153755188
+# top k accuracies:  0.1128 0.33 0.5412
+# test loss:  7887.021224035644
+# test time:  3.7204253673553467

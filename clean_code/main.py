@@ -93,10 +93,10 @@ def main():
         default=32  # or sequential
     )
     parser.add_argument(
-        '--file',
-        help='Path of a model',
+        '--complexity',
+        help='choose between easy and hard dataset',
         type=str,
-        default=None
+        default='easy'
     )
 
 
@@ -112,9 +112,12 @@ def main():
     concat = str2bool(args.concat)
     batch_size = int(args.batch_size)
     test_batch_size = int(args.test_batch_size)
+    complexity = args.complexity
     config = Config(include_captions=captions, remove_nonbinary=onlybin, augment_binary=augment,
                     cosine_similarity=cosine_similarity, image_layer=image_layer, projection=projection,
-                    sequential=sequential, concat=concat, batch_size=batch_size, test_batch_size=test_batch_size)
+                    sequential=sequential, concat=concat, batch_size=batch_size, test_batch_size=test_batch_size,
+                    complexity=complexity)
+
     factory = DataLoaderFactory(config)
 
     w2i = defaultdict(lambda: len(w2i))
@@ -136,7 +139,7 @@ def main():
     if image_layer == 'None':
         num_feat = 2048
     else:
-        num_feat = 1024
+        num_feat = 512
     CUDA = config.CUDA
     if config.projection == 'CBOW':
         model = CBOW(vocab_size=len(w2i), img_feat_size=num_feat, target_size=num_feat, CUDA=CUDA)
@@ -146,9 +149,9 @@ def main():
 
     image_layer = None
     if config.image_layer == 'mlp1':
-        image_layer = MLP1(input_size=2048, output_size=1024)
+        image_layer = MLP1(input_size=2048, output_size=512)
     elif config.image_layer == 'mlp2':
-        image_layer = MLP2(input_size=2048, hidden_size=1024, output_size=1024)
+        image_layer = MLP2(input_size=2048, hidden_size=1024, output_size=512)
 
     lr_mult = 1 if config.cosine_similarity else 10
     optimizer = optim.Adam(model.parameters(), lr=0.00001 * lr_mult)
