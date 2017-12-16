@@ -24,9 +24,14 @@ class TestDataSet(GenericDataSet):
         img_id = row.img_list
         target = [row.target]
         if len(text_int) > 0:
-            target = torch.LongTensor(target)
             text_tensor = torch.LongTensor(text_int)
-            text_size = torch.LongTensor([text_tensor.size(0)])
+            if len(text_tensor.size()) < 2:
+                target = torch.LongTensor([target])
+                text_size = torch.LongTensor([1])
+                text_tensor = text_tensor.view(1, -1)
+            else:
+                target = torch.LongTensor(target)
+                text_size = torch.LongTensor([text_tensor.size(0)])
             return (text_tensor, img_id, target, text_size)
 
     def convert_caption_to_int(self, text, stem, stopwords, stop_vocab):

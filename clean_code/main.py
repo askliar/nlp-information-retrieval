@@ -133,12 +133,15 @@ def main():
 
     val_dataset, val_dataloader = factory.generate_val_dataset(w2i)
     # test_dataset, test_dataloader = factory.generate_test_dataset(w2i)
-
+    if image_layer == 'None':
+        num_feat = 2048
+    else:
+        num_feat = 1024
     CUDA = config.CUDA
     if config.projection == 'CBOW':
-        model = CBOW(vocab_size=len(w2i), img_feat_size=1024, target_size=1024, CUDA=CUDA)
+        model = CBOW(vocab_size=len(w2i), img_feat_size=num_feat, target_size=num_feat, CUDA=CUDA)
     elif config.projection == 'RNN1':
-        model = RNN1(vocab_size=len(w2i), img_feat_size=1024, target_size=1024, CUDA=CUDA)
+        model = RNN1(vocab_size=len(w2i), img_feat_size=num_feat, target_size=num_feat, CUDA=CUDA)
 
 
     image_layer = None

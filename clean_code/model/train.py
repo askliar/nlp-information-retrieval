@@ -36,6 +36,20 @@ def train(model, image_layer, optimizer, loader, config):
         #     break
         # j += 1
 
+        # losses: -4.328049669886241 - 0.02756719534959389
+        # time
+        # epoch
+        # 0  ->  39.1187801361084
+        # top
+        # k
+        # accuracies: 0.2438
+        # 0.4902
+        # 0.6632
+        # test
+        # loss: 0.04692438579211011
+        # test
+        # time: 17.135030269622803
+
         # exclude sizes->Variable conversion, because we don't use it for backpropagation
         sizes = batch['size']
         text, img_feat, target = Variable(batch['text']), \

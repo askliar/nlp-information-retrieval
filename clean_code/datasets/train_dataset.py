@@ -30,9 +30,14 @@ class QuestionsDataSet(GenericDataSet):
             if not self.concat:
                 text_int = pad_text(text_int)
             img_id = row.target_img_id
-            target = torch.FloatTensor(target_int)
             text_tensor = torch.LongTensor(text_int)
-            text_size = torch.LongTensor([text_tensor.size(0)])
+            if len(text_tensor.size()) < 2:
+                target = torch.FloatTensor([target_int])
+                text_size = torch.LongTensor([1])
+                text_tensor = text_tensor.view(1, -1)
+            else:
+                target = torch.FloatTensor(target_int)
+                text_size = torch.LongTensor([text_tensor.size(0)])
             return (text_tensor, img_id, target, text_size)
 
     def convert_caption_to_int(self, text, stem, stopwords, stop_vocab):

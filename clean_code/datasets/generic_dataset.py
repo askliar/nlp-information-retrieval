@@ -58,7 +58,6 @@ class GenericDataSet(Dataset):
 
         h5_id = self.visual_feat_mapping[str(img_id)]
         img_feat = torch.FloatTensor(self.img_features[h5_id])
-
         sample = {'text': text_tensor, 'img_feat': img_feat, 'target': target, 'size': text_size}
         # sample = (text_tensor, img_feat, target)
         return sample
