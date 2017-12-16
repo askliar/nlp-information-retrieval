@@ -10,6 +10,7 @@ __pycache__/
 *.pth
 **/data_aws/
 **/plots/
+*.gz
 
 # Distribution / packaging
 .Python
