@@ -159,36 +159,44 @@ def main():
             image_layer = image_layer.cuda()
     losses = []
     losses_pos = []
+    losses_avg = []
+    losses_pos_avg = []
 
     for e in range(epochs):
         print('start of epoch ', e, 'for uid ', config.uid_str)
 
         start = time.time()
-        train_loss, train_loss_pos = train(model, image_layer, optimizer, questions_dataloader, config)
+        train_loss, train_loss_avg, train_loss_pos, train_loss_pos_avg, \
+            = train(model, image_layer, optimizer, questions_dataloader, config)
 
         # if config.captions_batch_size > 256:
         #     if e < 5:
         #         for param_group in optimizer.param_groups:
         #             param_group['lr'] *= np.float_power(5, 1 / 5)
 
-        print('losses: ', train_loss, train_loss_pos)
+        print('losses: ', train_loss_avg, train_loss_pos_avg)
         losses.append(train_loss)
+        losses_avg.append(train_loss_avg)
         losses_pos.append(train_loss_pos)
+        losses_pos_avg.append(train_loss_pos_avg)
         model.losses = losses
+        model.losses_avg = losses_avg
         model.losses_pos = losses_pos
+        model.losses_pos_avg = losses_pos_avg
         print('time epoch ', e, ' -> ', time.time() - start)
 
         # torch.cuda.synchronize()
         # torch.cuda.empty_cache()
 
         test_time = time.time()
-        test_loss, top1, top3, top5 = test(model, image_layer, val_dataloader, config)
+        test_loss, test_loss_avg, top1, top3, top5 = test(model, image_layer, val_dataloader, config)
         model.losses_test.append(test_loss)
+        model.losses_test_avg.append(test_loss_avg)
         model.top1s.append(top1)
         model.top3s.append(top3)
         model.top5s.append(top5)
         print('top k accuracies: ', top1, top3, top5)
-        print('test loss: ', test_loss)
+        print('test loss: ', test_loss_avg)
         print('test time: ', time.time() - test_time)
 
         is_best = top1 > best_top1
@@ -199,7 +207,8 @@ def main():
             'optimizer': optimizer,
         }, is_best, config)
 
-        plot_list = [model.losses, model.losses_pos, model.losses_test, model.top1s, model.top3s, model.top5s]
+        plot_list = [model.losses, model.losses_avg, model.losses_pos, model.losses_pos_avg,
+                     model.losses_test, model.losses_test_avg, model.top1s, model.top3s, model.top5s]
         pickle.dump(plot_list, open(str.format('data/{}/plot_list.pkl', config.uid_str), 'wb'))
         # torch.cuda.synchronize()
         # torch.cuda.empty_cache()

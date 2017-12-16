@@ -28,6 +28,7 @@ def train(model, image_layer, optimizer, loader, config):
 
     train_loss = 0
     positive = 0
+    n_batches = 0
     j = 0
     for batch in loader:
         startb = time.time()
@@ -90,7 +91,7 @@ def train(model, image_layer, optimizer, loader, config):
                 loss = distances.mean()
             else:
                 loss = (distances * target).mean()
-
+        n_batches += 1
         train_loss += loss.data[0]
         # print(train_loss[0])
         positive += distances.mean().data[0]  # loss.data[0]
@@ -99,4 +100,4 @@ def train(model, image_layer, optimizer, loader, config):
         loss.backward()
         optimizer.step()
 
-    return train_loss, positive
+    return train_loss, positive, train_loss / n_batches, positive / n_batches

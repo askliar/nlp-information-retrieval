@@ -71,7 +71,7 @@ class TestDataSet(GenericDataSet):
         if self.concat: #add rnn1
             return questions_int
         else:
-           return pad_text(questions_int)
+            return pad_text(questions_int)
 
     def imgids2imgs(self, img_id_arr):
         imgs = []

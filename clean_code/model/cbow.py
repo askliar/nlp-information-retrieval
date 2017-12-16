@@ -8,9 +8,12 @@ class CBOW(nn.Module):
     def __init__(self, vocab_size, img_feat_size, target_size, CUDA):
         super(CBOW, self).__init__()
         self.losses = []
+        self.losses_avg = []
         self.losses_pos = []
+        self.losses_pos_avg = []
         self.top1s, self.top3s, self.top5s = [], [], []
         self.losses_test = []
+        self.losses_test_avg = []
         self.embeddings = torch.nn.Embedding(vocab_size, img_feat_size, padding_idx=0)
         self.proj = nn.Linear(img_feat_size, target_size)
         self.CUDA = CUDA

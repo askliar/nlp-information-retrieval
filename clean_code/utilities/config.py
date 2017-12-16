@@ -22,20 +22,6 @@ class Config():
         self.img_data = 'data/img_data'
         self.text_data = 'data/text_data'
         self.complexity = 'easy'
-        # losses: -11.51617859909311 - 12.884004095918499
-        # time
-        # epoch
-        # 0  ->  81.26553654670715
-        # top
-        # k
-        # accuracies: 0.8154
-        # 0.9434
-        # 0.9798
-        # test
-        # loss: -1.0962858544766902
-        # test
-        # time: 7.104407787322998
-
         self.image_layer = image_layer
         self.image_layer_str = 'simple' if self.image_layer == 'None' else self.image_layer
         self.remove_nonbinary = remove_nonbinary

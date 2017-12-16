@@ -22,12 +22,16 @@ def test(model, image_layer, loader, config):
         text, img_feat, target = Variable(batch['text']), \
                                         Variable(batch['img_feat']), \
                                         Variable(batch['target'])
+        if len(text.size()) < 2:
+            text = text.view(1, -1)
         if CUDA:
             text, img_feat, target, sizes = text.cuda(), \
                                             img_feat.cuda(), \
                                             target.cuda(), \
                                             sizes.cuda()
         text_prediction = model(text)
+        if len(text_prediction.size()) < 2:
+            text_prediction = text_prediction.view(1, -1)
         # device = 0
         # show_memusage(device=device)
         img_prediction = img_feat
@@ -71,11 +75,11 @@ def test(model, image_layer, loader, config):
 
 
     # print(hist)
-    test_loss /= N
+    # test_loss
     top1 /= N
     top3 /= N
     top5 /= N
-    return test_loss, top1, top3, top5
+    return test_loss, test_loss / N, top1, top3, top5
 
 #
 # losses:  5910.962474822998 9913.569972991943
