@@ -60,7 +60,7 @@ def test(model, image_layer, loader, config):
                 if cosine_similarity:
                     scores = xp[i, i*10:i*10+10].data
                 else:
-                    scores = torch.sqrt(xp[i, i]).data
+                    scores = torch.sqrt(xp[i, i*10:i*10+10]).data
             else:
                 if cosine_similarity:
                     # scores = xp[total_idx:total_idx + size, img_total_idx:img_total_idx+img_prediction.size(0)].sum(0).data
