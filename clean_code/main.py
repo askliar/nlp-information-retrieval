@@ -172,10 +172,10 @@ def main():
         train_loss, train_loss_avg, train_loss_pos, train_loss_pos_avg, \
             = train(model, image_layer, optimizer, questions_dataloader, config)
 
-        # if config.captions_batch_size > 256:
-        #     if e < 5:
-        #         for param_group in optimizer.param_groups:
-        #             param_group['lr'] *= np.float_power(5, 1 / 5)
+        if config.captions_batch_size > 256:
+            if e < 10:
+                for param_group in optimizer.param_groups:
+                    param_group['lr'] *= np.float_power(16, 1 / 10)
 
         print('losses: ', train_loss_avg, train_loss_pos_avg)
         losses.append(train_loss)
