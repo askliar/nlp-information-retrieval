@@ -17,8 +17,9 @@ class RNN2(nn.Module):
 
     def forward(self, x, hidden=None):
         if hidden is None:
-            hidden = Variable(torch.zeros(1, x.size(0), self.input_size))
+            hidden = Variable(torch.zeros(1, x.size(1), self.input_size))
             if self.CUDA:
+
                 hidden = hidden.cuda()
 
         # if sizes is not None:
@@ -32,5 +33,5 @@ class RNN2(nn.Module):
         #         idx += sizes[i]
         #     x = x_temp
         out, hidden = self.rnn(x, hidden)
-        x = self.proj(hidden.squeeze())
+        x = self.proj(out)
         return x

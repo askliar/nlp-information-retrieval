@@ -52,24 +52,13 @@ def test(model, image_layer, loader, config):
             xp += torch.sum(text_prediction * text_prediction, 1).expand(xp.t().size()).t()
             xp += torch.sum(img_prediction * img_prediction, 1).expand(xp.size())
 
-        # print(text.size(), img_prediction.size(), target.size(), sizes.size())
         for i, size in enumerate(sizes):
-            # print(img_prediction.size(0))
             # if img_prediction.size(0) == 10:
             if config.concat:
-                if cosine_similarity:
-                    scores = xp[i, i*10:i*10+10].data
-                else:
-                    scores = torch.sqrt(xp[i, i*10:i*10+10]).data
+                scores = xp[i, i*10:i*10+10].data
             else:
-                if cosine_similarity:
-                    # scores = xp[total_idx:total_idx + size, img_total_idx:img_total_idx+img_prediction.size(0)].sum(0).data
-                    scores = xp[total_idx:total_idx + size, i*10:i*10+10].sum(0).data
-                else:
-                    # scores = torch.sqrt(xp[total_idx:total_idx+size, img_total_idx:img_total_idx+img_prediction.size(0)]).sum(0).data
-                    scores = torch.sqrt(xp[total_idx:total_idx+size, i*10:i*10+10]).sum(0).data
+                scores = xp[total_idx:total_idx + size, i*10:i*10+10].sum(0).data
             test_loss += scores[target.data[i]]
-            # print(img_prediction.size(0))
             if len(target.size()) > 1:
                 target = target.view(-1)
             top1 += 1 if target.data[i] in scores.topk(1, largest=False)[1] else 0
@@ -95,3 +84,17 @@ def test(model, image_layer, loader, config):
 # top k accuracies:  0.2798 0.5296 0.6918
 # test loss:  1488.9711460693359
 # test time:  17.264331817626953
+
+
+if config.concat:
+    # if cosine_similarity:
+    scores = xp[i, i * 10:i * 10 + 10].data
+    # else:
+    #     scores = torch.sqrt(xp[i, i*10:i*10+10]).data
+else:
+    # if cosine_similarity:
+    # scores = xp[total_idx:total_idx + size, img_total_idx:img_total_idx+img_prediction.size(0)].sum(0).data
+    scores = xp[total_idx:total_idx + size, i * 10:i * 10 + 10].sum(0).data
+    # else:
+    # scores = torch.sqrt(xp[total_idx:total_idx+size, img_total_idx:img_total_idx+img_prediction.size(0)]).sum(0).data
+    # scores = (xp[total_idx:total_idx+size, i*10:i*10+10]).sum(0).data

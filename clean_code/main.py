@@ -169,7 +169,7 @@ def main():
         print('start of epoch ', e, 'for uid ', config.uid_str)
 
         start = time.time()
-        train_loss, train_loss_avg, train_loss_pos, train_loss_pos_avg, \
+        train_loss, train_loss_pos, train_loss_avg, train_loss_pos_avg, \
             = train(model, image_layer, optimizer, questions_dataloader, config)
 
         if config.captions_batch_size > 256:

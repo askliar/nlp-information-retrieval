@@ -4,6 +4,7 @@ import time
 import numpy as np
 import torch
 import torch.nn.functional as F
+from utilities.distances import cosine_similarity, mean_squared_error
 from torch.autograd import Variable
 from model.rnn2 import RNN2
 
@@ -25,16 +26,18 @@ def train(model, image_layer, optimizer, loader, config):
     rnn2 = None
     if config.sequential:
         rnn2 = RNN2(2048, 2048, 2048, CUDA)
+        if CUDA:
+            rnn2 = rnn2.cuda()
 
-    train_loss = 0
-    positive = 0
+    train_loss = 0.0
+    positive = 0.0
     n_batches = 0
     j = 0
     for batch in loader:
         startb = time.time()
-        # if j > 2:
-        #     break
-        # j += 1
+        if j > 20:
+            break
+        j += 1
 
         # exclude sizes->Variable conversion, because we don't use it for backpropagation
         sizes = batch['size']
@@ -66,15 +69,32 @@ def train(model, image_layer, optimizer, loader, config):
                 reshaped_tensor = reshaped_tensor.cuda()
             tot_idx = 0
             for i, size in enumerate(sizes):
-                # a = F.pad(text_prediction[tot_idx:tot_idx + size], (0, 0, 0, maxlen - size), 'constant', 0)
-                # print(a.size())
-                print(reshaped_tensor.size())
+
                 reshaped_tensor[:, i, :] = F.pad(text_prediction[tot_idx:tot_idx + size], (0, 0, 0, maxlen - size), 'constant', 0)
                 tot_idx += size
-            out, hidden = rnn2(reshaped_tensor)
+            out = rnn2(reshaped_tensor)
+            for i, size in enumerate(sizes):
+                if i == 0:
+                    if config.cosine_similarity:
+                        # loss = cosine_similarity(out[:size, i], img_prediction[i]).sum()
+                        loss = F.cosine_similarity(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
+                    else:
+                        # loss = mean_squared_error(out[:size, i], img_prediction[i]).sum()
+                        loss = F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size,img_prediction.size(1))).sum()
+                else:
+                    if config.cosine_similarity:
+                        # loss += cosine_similarity(out[:size, i], img_prediction[i]).sum()
+                        loss += F.cosine_similarity(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
+                    else:
+                        # loss += mean_squared_error(out[:size, i], img_prediction[i]).sum()
+                        loss += F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size,img_prediction.size(1))).sum()
+
+            loss = loss / sizes.size(0)
+            print(loss)
+            train_loss += loss.data[0]
+            positive += 0.0
 
         else:
-            # st = time.time()
             if config.concat:
                 idx = torch.LongTensor([x for x in range(sizes.size(0))])
             else:
@@ -91,12 +111,10 @@ def train(model, image_layer, optimizer, loader, config):
                 loss = distances.mean()
             else:
                 loss = (distances * target).mean()
+            train_loss += loss.data[0]
+            positive += distances.mean().data[0]
+
         n_batches += 1
-        train_loss += loss.data[0]
-        # print(train_loss[0])
-        positive += distances.mean().data[0]  # loss.data[0]
-        # device = 0
-        # show_memusage(device=device)
         loss.backward()
         optimizer.step()
 
