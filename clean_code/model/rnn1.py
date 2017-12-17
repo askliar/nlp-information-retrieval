@@ -13,7 +13,7 @@ class RNN1(nn.Module):
         self.top1s, self.top3s, self.top5s = [], [], []
         self.losses_test = []
         self.losses_test_avg = []
-        self.rnn = nn.GRU(img_feat_size, target_size)
+        self.rnn = nn.GRU(img_feat_size, img_feat_size)
         self.embeddings = nn.Embedding(vocab_size, img_feat_size, padding_idx=0)
         self.proj = nn.Linear(img_feat_size, target_size)
         self.CUDA = CUDA

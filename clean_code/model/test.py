@@ -57,7 +57,7 @@ def test(model, image_layer, loader, config):
             # print(size, img_prediction.size())
             if config.concat:
                 if cosine_similarity:
-                    scores = xp[i, i * 10:i * 10 + 10].data
+                    scores = 1 - xp[i, i * 10:i * 10 + 10].data
                 else:
                     scores = (1 / img_prediction.size(1)) * (xp[i, i*10:i*10+10]).data
             else:
@@ -70,14 +70,9 @@ def test(model, image_layer, loader, config):
             test_loss += scores[target.data[i]]
             if len(target.size()) > 1:
                 target = target.view(-1)
-            if cosine_similarity:
-                top1 += 1 if target.data[i] in scores.topk(1)[1] else 0
-                top3 += 1 if target.data[i] in scores.topk(3)[1] else 0
-                top5 += 1 if target.data[i] in scores.topk(5)[1] else 0
-            else:
-                top1 += 1 if target.data[i] in scores.topk(1, largest = False)[1] else 0
-                top3 += 1 if target.data[i] in scores.topk(3, largest = False)[1] else 0
-                top5 += 1 if target.data[i] in scores.topk(5, largest = False)[1] else 0
+            top1 += 1 if target.data[i] in scores.topk(1, largest = False)[1] else 0
+            top3 += 1 if target.data[i] in scores.topk(3, largest = False)[1] else 0
+            top5 += 1 if target.data[i] in scores.topk(5, largest = False)[1] else 0
 
             predictions.append(scores)
             # hist[img_prediction.size(0)-1] += 1
