@@ -99,6 +99,12 @@ def main():
         default=0.0001  
     )
     parser.add_argument(
+        '--target_space',
+        help='dimensionality of target space',
+        type=float,
+        default=True
+    )
+    parser.add_argument(
         '--complexity',
         help='choose between easy and hard dataset',
         type=str,
@@ -147,12 +153,13 @@ def main():
     if image_layer == 'None':
         num_feat = 2048
     else:
-        num_feat = 512
+        num_feat = 256
+
     CUDA = config.CUDA
     if config.projection == 'CBOW':
-        model = CBOW(vocab_size=len(w2i), img_feat_size=num_feat, target_size=num_feat, CUDA=CUDA)
+        model = CBOW(vocab_size=len(w2i), img_feat_size=256, target_size=2048, CUDA=CUDA)
     elif config.projection == 'RNN1':
-        model = RNN1(vocab_size=len(w2i), img_feat_size=num_feat, target_size=num_feat, CUDA=CUDA)
+        model = RNN1(vocab_size=len(w2i), img_feat_size=256, target_size=2048, CUDA=CUDA)
 
 
     image_layer = None
