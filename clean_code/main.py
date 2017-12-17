@@ -95,7 +95,7 @@ def main():
     parser.add_argument(
         '--lr',
         help='learning rate',
-        type=int,
+        type=float,
         default=0.0001  
     )
     parser.add_argument(
@@ -119,7 +119,8 @@ def main():
     batch_size = int(args.batch_size)
     test_batch_size = int(args.test_batch_size)
     complexity = args.complexity
-    learning_rate = args.lr
+    learning_rate = float(args.lr)
+
     config = Config(include_captions=captions, remove_nonbinary=onlybin, augment_binary=augment,
                     cosine_similarity=cosine_similarity, image_layer=image_layer, projection=projection,
                     sequential=sequential, concat=concat, batch_size=batch_size, test_batch_size=test_batch_size,
