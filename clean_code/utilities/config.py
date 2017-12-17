@@ -46,7 +46,7 @@ class Config():
         self.projection = projection
         self.projection_str = self.projection
 
-        self.uid_str = str.format('{}_{}_{}_{}_{}_{}_{}_{}_{}', self.sequential_str, self.concat_str, self.projection_str,
+        self.uid_str = str.format('{}_{}_{}_{}_{}_{}_{}_{}_{}_{}', self.complexity, self.sequential_str, self.concat_str, self.projection_str,
                                   self.remove_nonbinary_str, self.augment_binary_str, self.include_captions_str,
                                   self.cosine_similarity_str, self.image_layer_str, str(batch_size))
         self.pickle_uid_str = str.format('{}_{}_{}_{}', self.remove_nonbinary_str, self.augment_binary_str,
