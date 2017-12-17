@@ -10,13 +10,13 @@ class Config():
                  batch_size=256, test_batch_size=32, complexity='easy', learning_rate=0.00001):
         self.DEBUG = False
         self.CUDA = torch.cuda.is_available()
-
+        self.stem = False
         self.captions_batch_size = batch_size
         self.questions_batch_size = batch_size
         self.val_batch_size = test_batch_size
         self.test_batch_size = test_batch_size
-        self.stopwords = True
-        self.stop = stop
+        self.stopwords = False
+        self.stop = None
 
         torch.manual_seed(42)
 
@@ -45,11 +45,13 @@ class Config():
 
         self.projection = projection
         self.projection_str = self.projection
+        self.stem_str = 'stem' if self.stem else 'no_stem'
+        self.stop_str = 'stop' if self.stopwords else 'no_stop'
 
         self.uid_str = str.format('{}_{}_{}_{}_{}_{}_{}_{}_{}_{}', self.complexity, self.sequential_str, self.concat_str, self.projection_str,
                                   self.remove_nonbinary_str, self.augment_binary_str, self.include_captions_str,
                                   self.cosine_similarity_str, self.image_layer_str, str(batch_size))
-        self.pickle_uid_str = str.format('{}_{}_{}_{}', self.remove_nonbinary_str, self.augment_binary_str,
+        self.pickle_uid_str = str.format('{}_{}_{}_{}_{}_{}', self.stem_str, self.stop_str, self.remove_nonbinary_str, self.augment_binary_str,
                                          self.include_captions_str, self.concat_str)
 
         self.save_path_latest = str.format('data/{}/checkpoint_latest.pth.tar', self.uid_str)

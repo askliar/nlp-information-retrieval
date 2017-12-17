@@ -19,6 +19,7 @@ class GenericDataSet(Dataset):
         self.img_features, self.mean, self.std, self.visual_feat_mapping = self.load_image_data(img_feat_file,
                                                                                                 img_map_file)
         self.vocab = vocab
+        print(stopwords, stem)
         if stopwords:
             self.stop_vocab = stop_vocab
         retrieve = os.path.isfile(pickle_file)
