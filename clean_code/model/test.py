@@ -57,7 +57,7 @@ def test(model, image_layer, loader, config):
             # print(size, img_prediction.size())
             if config.concat:
                 if cosine_similarity:
-                    scores = 1 - xp[i, i * 10:i * 10 + 10].data
+                    scores = xp[i, i * 10:i * 10 + 10].data
                 else:
                     scores = (1 / img_prediction.size(1)) * (xp[i, i*10:i*10+10]).data
             else:
