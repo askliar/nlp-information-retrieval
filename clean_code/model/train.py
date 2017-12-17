@@ -86,7 +86,7 @@ def train(model, image_layer, optimizer, loader, config):
                 else:
                     if config.cosine_similarity:
                         # loss += cosine_similarity(out[:size, i], img_prediction[i]).sum()
-                        loss += F.cosine_similarity(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
+                        loss += 1 - F.cosine_similarity(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
                     else:
                         # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
                         loss += (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size,img_prediction.size(1))), 2).sum()
@@ -105,7 +105,7 @@ def train(model, image_layer, optimizer, loader, config):
             if CUDA:
                 idx = idx.cuda()
             if config.cosine_similarity:
-                distances = F.cosine_similarity(text_prediction, img_prediction[idx])
+                distances = 1 - F.cosine_similarity(text_prediction, img_prediction[idx])
             else:
                 distances = (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(text_prediction, img_prediction[idx]), 2)
                 # print(we)

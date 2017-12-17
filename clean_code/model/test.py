@@ -70,9 +70,15 @@ def test(model, image_layer, loader, config):
             test_loss += scores[target.data[i]]
             if len(target.size()) > 1:
                 target = target.view(-1)
-            top1 += 1 if target.data[i] in scores.topk(1, largest=False)[1] else 0
-            top3 += 1 if target.data[i] in scores.topk(3, largest=False)[1] else 0
-            top5 += 1 if target.data[i] in scores.topk(5, largest=False)[1] else 0
+            if cosine_similarity:
+                top1 += 1 if target.data[i] in scores.topk(1)[1] else 0
+                top3 += 1 if target.data[i] in scores.topk(3)[1] else 0
+                top5 += 1 if target.data[i] in scores.topk(5)[1] else 0
+            else:
+                top1 += 1 if target.data[i] in scores.topk(1, largest = False)[1] else 0
+                top3 += 1 if target.data[i] in scores.topk(3, largest = False)[1] else 0
+                top5 += 1 if target.data[i] in scores.topk(5, largest = False)[1] else 0
+
             predictions.append(scores)
             # hist[img_prediction.size(0)-1] += 1
             N += 1
