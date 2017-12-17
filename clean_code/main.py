@@ -72,25 +72,31 @@ def main():
         '--sequential',
         help='use CBOW or RNN for word concatenation',
         type=str,
-        default='False' # or sequential
+        default='False' 
     )
     parser.add_argument(
         '--concat',
         help='whether to consider all text as one',
         type=str,
-        default='False'  # or sequential
+        default='False'  
     )
     parser.add_argument(
         '--batch_size',
         help='batch size',
         type=int,
-        default=64  # or sequential
+        default=64  
     )
     parser.add_argument(
         '--test_batch_size',
         help='test_batch size',
         type=int,
-        default=32  # or sequential
+        default=32  
+    )
+    parser.add_argument(
+        '--lr',
+        help='learning rate',
+        type=int,
+        default=0.0001  
     )
     parser.add_argument(
         '--complexity',
@@ -113,10 +119,11 @@ def main():
     batch_size = int(args.batch_size)
     test_batch_size = int(args.test_batch_size)
     complexity = args.complexity
+    learning_rate = args.lr
     config = Config(include_captions=captions, remove_nonbinary=onlybin, augment_binary=augment,
                     cosine_similarity=cosine_similarity, image_layer=image_layer, projection=projection,
                     sequential=sequential, concat=concat, batch_size=batch_size, test_batch_size=test_batch_size,
-                    complexity=complexity)
+                    complexity=complexity, learning_rate=learning_rate)
 
     factory = DataLoaderFactory(config)
 
@@ -154,7 +161,7 @@ def main():
         image_layer = MLP2(input_size=2048, hidden_size=1024, output_size=512)
 
     lr_mult = 1 if config.cosine_similarity else 10
-    optimizer = optim.Adam(model.parameters(), lr=0.00001 * lr_mult)
+    optimizer = optim.Adam(model.parameters(), lr=config.learning_rate * lr_mult)
 
     # model = torch.load('../results/checkpoint_22')
     # test(model, dataloader_val)

@@ -7,7 +7,7 @@ from utilities.nltk_helpers import stop
 class Config():
     def __init__(self, remove_nonbinary=True, include_captions=False, augment_binary=True, cosine_similarity=True,
                  image_layer='None', projection='CBOW', sequential=False, concat=False,
-                 batch_size=256, test_batch_size=32, complexity='easy'):
+                 batch_size=256, test_batch_size=32, complexity='easy', learning_rate=0.00001):
         self.DEBUG = False
         self.CUDA = torch.cuda.is_available()
 
@@ -19,6 +19,8 @@ class Config():
         self.stop = stop
 
         torch.manual_seed(42)
+
+        self.learning_rate = learning_rate
 
         self.img_data = 'data/img_data'
         self.text_data = 'data/text_data'

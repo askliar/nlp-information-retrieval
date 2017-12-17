@@ -7,40 +7,41 @@ import pickle
 
 for root, dirs, files in os.walk('../plots/'):
     if 'plot_list.pkl' in files:
-        path = os.path.join(root, files[0])
-        print(path)
-        # model_best = 
+        path = os.path.join(root, 'plot_list.pkl')
+        # model_best =
         # model_latest = torch.load(os.path.join(root, 'checkpoint_latest.pth.tar'))
         [losses, losses_avg, losses_pos, losses_pos_avg,
-                     losses_test, losses_test_avg,
-                     top1s, top3s, top5s] = pickle.load(open(path, 'rb'))
-        # a = pickle.load(open(path, 'rb'))
-        # print(len(a))
+                    losses_test, losses_test_avg,
+                    top1s, top3s, top5s] = pickle.load(open(path, 'rb'))
+        # print(path)
+        # aa = pickle.load(open(path, 'rb'))
+
+
         fig, ax = plt.subplots(nrows=2, ncols=2)
 
         plt.subplot(2, 3, 1)
-        plt.plot(losses, 'o-')
+        plt.plot(losses[10:], 'o-')
         plt.title(root)
         plt.ylabel('losses')
 
         plt.subplot(2, 3, 2)
-        plt.plot(losses_pos, 'o-')
+        plt.plot(losses_pos[10:], 'o-')
         plt.ylabel('losses_pos')
 
         plt.subplot(2, 3, 3)
-        plt.plot(losses_test, 'o-')
+        plt.plot(losses_test[10:], 'o-')
         plt.ylabel('losses_test')
 
         plt.subplot(2, 3, 4)
-        plt.plot(top1s, 'o-')
+        plt.plot(top1s[10:], 'o-')
         plt.ylabel('top1')
 
         plt.subplot(2, 3, 5)
-        plt.plot(top3s, 'o-')
+        plt.plot(top3s[10:], 'o-')
         plt.ylabel('top3')
 
         plt.subplot(2, 3, 6)
-        plt.plot(top5s, 'o-')
+        plt.plot(top5s[10:], 'o-')
         plt.ylabel('top5')
 
         print(top1s)
@@ -48,5 +49,5 @@ for root, dirs, files in os.walk('../plots/'):
         print(top5s)
 
         # plt.show()
-        plt.savefig(os.path.join(root, 'graphs.png'))
+        plt.savefig(os.path.join(root, 'graphs.png'), dpi=600)
         plt.clf()
