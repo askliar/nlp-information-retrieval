@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pickle
 
 
-for root, dirs, files in os.walk('../plots2/'):
+for root, dirs, files in os.walk('../data_tel/'):
     if 'plot_list.pkl' in files:
         path = os.path.join(root, 'plot_list.pkl')
         # model_best =
