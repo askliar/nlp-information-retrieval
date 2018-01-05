@@ -2,7 +2,8 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+import numpy as np
 class RNN2(nn.Module):
     def __init__(self, input_size, hidden_size, target_size, CUDA):
         super(RNN2, self).__init__()
@@ -12,26 +13,42 @@ class RNN2(nn.Module):
         self.losses_test = []
         self.rnn = nn.GRU(input_size=input_size, hidden_size=hidden_size)
         self.proj = nn.Linear(hidden_size, target_size)
-        self.CUDA = CUDA
         self.input_size = input_size
+        self.CUDA = CUDA
+        self.img_feat_size = hidden_size
 
-    def forward(self, x, hidden=None):
+    def forward(self, input_text, hidden=None, sizes=None):
         if hidden is None:
-            hidden = Variable(torch.zeros(1, x.size(1), self.input_size))
+            hidden = Variable(torch.zeros(1, input_text.size(0), self.img_feat_size))
             if self.CUDA:
-
                 hidden = hidden.cuda()
 
-        # if sizes is not None:
-        #     question_sets_amount = sizes.size(0)
-        #     x_temp = Variable(torch.zeros(question_sets_amount))
-        #     if self.CUDA:
-        #         x_temp = x_temp.cuda()
-        #     idx = 0
-        #     for i in range(question_sets_amount):
-        #         x_temp[i] = torch.sum(x[idx:idx + sizes[i]])
-        #         idx += sizes[i]
-        #     x = x_temp
-        out, hidden = self.rnn(x, hidden)
-        x = self.proj(out)
+        y = input_text
+        if sizes is None:
+            lens = torch.LongTensor(np.count_nonzero(input_text.data.cpu().numpy()[:, :, 0], axis=0)).cuda()
+            lens1 = torch.LongTensor(np.count_nonzero(input_text.data.cpu().numpy()[:, :, 0], axis=1)).cuda()
+        else:
+            lens1 = sizes
+
+        lengths, ind = torch.sort(lens1, 0, descending=True)
+        y = pack_padded_sequence(y[ind], list(lengths), batch_first=True)
+
+        out, hidden = self.rnn(y, hidden)
+
+        _, revert_ind = ind.sort()
+        x = self.proj(F.relu(hidden.squeeze()[revert_ind]))
+
         return x
+    # def forward(self, x, hidden=None):
+    #     if hidden is None:
+    #         hidden = Variable(torch.zeros(1, x.size(1), self.input_size))
+    #         if self.CUDA:
+    #             hidden = hidden.cuda()
+    #
+    #
+    #     # lengths, ind = torch.sort(lens1, 0, descending=True)
+    #     # y = pack_padded_sequence(y[ind], list(lengths), batch_first=True)
+    #     out, hidden = self.rnn(x, hidden)
+    #     # _, revert_ind = ind.sort()
+    #     x = self.proj(F.relu(out))
+    #     return x

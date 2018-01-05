@@ -6,7 +6,6 @@ import torch
 import torch.nn.functional as F
 from utilities.distances import cosine_similarity, mean_squared_error
 from torch.autograd import Variable
-from model.rnn2 import RNN2
 
 try:
     import gpustat
@@ -20,15 +19,9 @@ def show_memusage(device=0):
     print("{}/{}".format(item["memory.used"], item["memory.total"]))
 
 
-def train(model, image_layer, optimizer, loader, config):
+def train(model, rnn2, image_layer, optimizer, loader, config):
     model.train()
     CUDA = config.CUDA
-    rnn2 = None
-    if config.sequential:
-        num_feat = 2048 if image_layer == None else 512
-        rnn2 = RNN2(num_feat, num_feat, num_feat, CUDA)
-        if CUDA:
-            rnn2 = rnn2.cuda()
 
     train_loss = 0.0
     positive = 0.0
@@ -58,39 +51,26 @@ def train(model, image_layer, optimizer, loader, config):
         # else:
         text_prediction = model(text)
         img_prediction = img_feat
+        if not config.neg_backprop:
+            # print('using absolute')
+            target = torch.abs(target)
         if image_layer != None:
+            print('using image layer')
             img_prediction = image_layer(img_feat)
-
         if config.sequential:
-            # print('we')
             maxlen = torch.max(sizes)
-            # print(sizes.size())
-            reshaped_tensor = Variable(torch.zeros(maxlen, sizes.size(0), num_feat).cuda())
+            reshaped_tensor = Variable(torch.zeros(sizes.size(0), maxlen, config.emb_size).cuda())
             if CUDA:
                 reshaped_tensor = reshaped_tensor.cuda()
             tot_idx = 0
             for i, size in enumerate(sizes):
-
-                reshaped_tensor[:, i, :] = F.pad(text_prediction[tot_idx:tot_idx + size], (0, 0, 0, maxlen - size), 'constant', 0)
+                reshaped_tensor[i, :, :] = F.pad(text_prediction[tot_idx:tot_idx + size], (0, 0, 0, maxlen - size), 'constant', 0)
                 tot_idx += size
-            out = rnn2(reshaped_tensor)
-            for i, size in enumerate(sizes):
-                if i == 0:
-                    if config.cosine_similarity:
-                        # loss = cosine_similarity(out[:size, i], img_prediction[i]).sum()
-                        loss = F.cosine_similarity(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
-                    else:
-                        # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
-                        # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
-                        loss = (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size,img_prediction.size(1))), 2).sum()
-                else:
-                    if config.cosine_similarity:
-                        # loss += cosine_similarity(out[:size, i], img_prediction[i]).sum()
-                        loss += F.cosine_similarity(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
-                    else:
-                        # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
-                        loss += (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size,img_prediction.size(1))), 2).sum()
-
+            out = rnn2(reshaped_tensor, sizes=sizes)
+            if config.cosine_similarity:
+                loss = - F.cosine_similarity(out, img_prediction).sum()
+            else:
+                loss = torch.pow(F.pairwise_distance(out, img_prediction), 2).sum()
             loss = loss / sizes.size(0)
             # print(loss)
             train_loss += loss.data[0]
@@ -105,14 +85,16 @@ def train(model, image_layer, optimizer, loader, config):
             if CUDA:
                 idx = idx.cuda()
             if config.cosine_similarity:
-                distances = F.cosine_similarity(text_prediction, img_prediction[idx])
+                distances = - F.cosine_similarity(text_prediction, img_prediction[idx])
             else:
-                distances = (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(text_prediction, img_prediction[idx]), 2)
-                # print(we)
+                distances = torch.pow(F.pairwise_distance(text_prediction, img_prediction[idx]), 2)
+                # distances = (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(text_prediction, img_prediction[idx]), 2)
             if config.concat:
                 loss = distances.mean()
             else:
                 loss = (distances * target).mean()
+                # losss = torch.nn.CosineSimilarity()
+                # loss = losss(text_prediction, img_prediction[idx]).mean()
             train_loss += loss.data[0]
             positive += distances.mean().data[0]
 

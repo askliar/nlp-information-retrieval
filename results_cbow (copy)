@@ -1,0 +1,385 @@
+False False
+False False
+start of epoch  0 for uid  easy_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.13930918641599033 -0.13930918641599033
+time epoch  0  ->  1.9980602264404297
+top k accuracies:  0.7044 0.8934 0.9544
+test loss:  -0.21722831301207152
+test time:  2.965383529663086
+start of epoch  1 for uid  easy_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.2596394957796845 -0.2596394957796845
+time epoch  1  ->  1.788548231124878
+top k accuracies:  0.7768 0.9404 0.9798
+test loss:  -0.274931536289744
+test time:  3.02339506149292
+start of epoch  2 for uid  easy_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.29962312322202084 -0.29962312322202084
+time epoch  2  ->  1.749157190322876
+top k accuracies:  0.8068 0.9546 0.9864
+test loss:  -0.29613453770536874
+test time:  2.99117374420166
+start of epoch  3 for uid  easy_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.32241345083755657 -0.32241345083755657
+time epoch  3  ->  1.7418365478515625
+top k accuracies:  0.8244 0.9588 0.9882
+test loss:  -0.31890723719358793
+test time:  2.9805569648742676
+start of epoch  4 for uid  easy_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.33853841185990996 -0.33853841185990996
+time epoch  4  ->  1.7632560729980469
+top k accuracies:  0.8448 0.9662 0.9904
+test loss:  -0.32777093690785114
+test time:  3.0059738159179688
+False False
+False False
+start of epoch  0 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.04160137621146156 -0.0022105656292042883
+time epoch  0  ->  2.8805055618286133
+top k accuracies:  0.2202 0.426 0.604
+test loss:  0.15371646700976707
+test time:  3.3941640853881836
+start of epoch  1 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.10658661176058934 -0.006296903243551258
+time epoch  1  ->  2.6735599040985107
+top k accuracies:  0.2336 0.4216 0.5678
+test loss:  -0.07834016425462906
+test time:  3.464899778366089
+start of epoch  2 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.1460837494358157 -0.0024740358267434834
+time epoch  2  ->  2.6739540100097656
+top k accuracies:  0.2324 0.4082 0.5452
+test loss:  0.013972348654743836
+test time:  3.4610748291015625
+start of epoch  3 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.17161751820215487 0.0015428691855409633
+time epoch  3  ->  2.706104278564453
+top k accuracies:  0.2174 0.3838 0.523
+test loss:  -0.04528391906219622
+test time:  3.3729426860809326
+start of epoch  4 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.19052086649429673 0.0038471936733186717
+time epoch  4  ->  2.69217848777771
+top k accuracies:  0.2124 0.3676 0.5008
+test loss:  0.0031980133769335226
+test time:  3.427813768386841
+False False
+False False
+start of epoch  0 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.0864892842745007 -0.0864892842745007
+time epoch  0  ->  2.873745918273926
+top k accuracies:  0.6582 0.869 0.9466
+test loss:  -0.7837396851865341
+test time:  3.1667771339416504
+start of epoch  1 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.18244152086994253 -0.18244152086994253
+time epoch  1  ->  2.6546454429626465
+top k accuracies:  0.7144 0.9158 0.9706
+test loss:  -0.9547281430829782
+test time:  3.120528221130371
+start of epoch  2 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.21594061510301732 -0.21594061510301732
+time epoch  2  ->  2.703535318374634
+top k accuracies:  0.7366 0.9274 0.976
+test loss:  -1.1057195000873878
+test time:  3.0852408409118652
+start of epoch  3 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.2337087326989157 -0.2337087326989157
+time epoch  3  ->  2.716989755630493
+top k accuracies:  0.7494 0.9362 0.9796
+test loss:  -1.1571845042486442
+test time:  3.0692713260650635
+start of epoch  4 for uid  easy_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.2454960371495978 -0.2454960371495978
+time epoch  4  ->  2.7127811908721924
+top k accuracies:  0.7638 0.9394 0.9806
+test loss:  -1.1767810048349667
+test time:  3.1831798553466797
+False False
+False False
+start of epoch  0 for uid  easy_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.14160206403119271 -0.14160206403119271
+time epoch  0  ->  2.120755910873413
+top k accuracies:  0.691 0.8888 0.9558
+test loss:  -0.2166024938734379
+test time:  3.0125722885131836
+start of epoch  1 for uid  easy_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.263475428569022 -0.263475428569022
+time epoch  1  ->  1.9161009788513184
+top k accuracies:  0.759 0.9328 0.9756
+test loss:  -0.26956958821577937
+test time:  2.9902279376983643
+start of epoch  2 for uid  easy_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.3023885401104027 -0.3023885401104027
+time epoch  2  ->  1.9322094917297363
+top k accuracies:  0.786 0.946 0.9832
+test loss:  -0.28687027819791694
+test time:  2.9551525115966797
+start of epoch  3 for uid  easy_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.3246545187154844 -0.3246545187154844
+time epoch  3  ->  1.9239530563354492
+top k accuracies:  0.8 0.9524 0.9846
+test loss:  -0.31343636678240727
+test time:  3.050462484359741
+start of epoch  4 for uid  easy_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.3403461107938113 -0.3403461107938113
+time epoch  4  ->  1.9399232864379883
+top k accuracies:  0.8248 0.9564 0.987
+test loss:  -0.32317196741341614
+test time:  3.0103769302368164
+False False
+False False
+start of epoch  0 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.04022546144476395 -0.020260041512783607
+time epoch  0  ->  3.1432011127471924
+top k accuracies:  0.2544 0.525 0.7072
+test loss:  0.12930928931668167
+test time:  3.3554677963256836
+start of epoch  1 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.09074549280870509 -0.07078270820815234
+time epoch  1  ->  2.959493398666382
+top k accuracies:  0.3704 0.6586 0.8236
+test loss:  -0.08925929301326978
+test time:  3.385064125061035
+start of epoch  2 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.11829019953947606 -0.07915830867555874
+time epoch  2  ->  2.9544334411621094
+top k accuracies:  0.3722 0.6692 0.831
+test loss:  0.020635976373136508
+test time:  3.2983784675598145
+start of epoch  3 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.15253232353672963 -0.05903905803870818
+time epoch  3  ->  3.001460313796997
+top k accuracies:  0.3556 0.6186 0.769
+test loss:  -0.21407224358454113
+test time:  3.331444501876831
+start of epoch  4 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.1830815771337954 -0.039767559282086765
+time epoch  4  ->  2.992486000061035
+top k accuracies:  0.2666 0.5156 0.6948
+test loss:  -0.20881869903625921
+test time:  3.337749719619751
+False False
+False False
+start of epoch  0 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.08527666421680359 -0.08527666421680359
+time epoch  0  ->  3.135591745376587
+top k accuracies:  0.6202 0.8476 0.9314
+test loss:  -1.3857861617863179
+test time:  3.1994893550872803
+start of epoch  1 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.182510597914352 -0.182510597914352
+time epoch  1  ->  2.9574599266052246
+top k accuracies:  0.6824 0.895 0.9588
+test loss:  -1.6772220398905222
+test time:  3.1505954265594482
+start of epoch  2 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.2157971489345227 -0.2157971489345227
+time epoch  2  ->  2.950137138366699
+top k accuracies:  0.7044 0.9082 0.9662
+test loss:  -1.9535519943752793
+test time:  3.1589725017547607
+start of epoch  3 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.23323760758229783 -0.23323760758229783
+time epoch  3  ->  2.9668517112731934
+top k accuracies:  0.7186 0.9148 0.9686
+test loss:  -2.028399822987802
+test time:  3.2644360065460205
+start of epoch  4 for uid  easy_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.24468564102590715 -0.24468564102590715
+time epoch  4  ->  2.934823751449585
+top k accuracies:  0.729 0.9224 0.9712
+test loss:  -2.0580773219259454
+test time:  3.1153523921966553
+False False
+False False
+start of epoch  0 for uid  hard_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.13930918641599033 -0.13930918641599033
+time epoch  0  ->  1.9891643524169922
+top k accuracies:  0.2602 0.5902 0.7964
+test loss:  -0.21722831301207152
+test time:  3.152679204940796
+start of epoch  1 for uid  hard_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.2596394957796845 -0.2596394957796845
+time epoch  1  ->  1.800614833831787
+top k accuracies:  0.298 0.6336 0.829
+test loss:  -0.274931536289744
+test time:  3.1958446502685547
+start of epoch  2 for uid  hard_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.29962312322202084 -0.29962312322202084
+time epoch  2  ->  1.8216986656188965
+top k accuracies:  0.322 0.6662 0.8508
+test loss:  -0.29613453770536874
+test time:  3.114647626876831
+start of epoch  3 for uid  hard_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.32241345083755657 -0.32241345083755657
+time epoch  3  ->  1.8080203533172607
+top k accuracies:  0.3288 0.677 0.859
+test loss:  -0.31890723719358793
+test time:  3.2233710289001465
+start of epoch  4 for uid  hard_individual_concat_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.33853841185990996 -0.33853841185990996
+time epoch  4  ->  1.8186180591583252
+top k accuracies:  0.3434 0.6852 0.8612
+test loss:  -0.32777093690785114
+test time:  3.1513352394104004
+False False
+False False
+start of epoch  0 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.04160137621146156 -0.0022105656292042883
+time epoch  0  ->  2.937443256378174
+top k accuracies:  0.099 0.306 0.5184
+test loss:  0.15371646700976707
+test time:  3.481220006942749
+start of epoch  1 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.10658661176058934 -0.006296903243551258
+time epoch  1  ->  2.7560853958129883
+top k accuracies:  0.1158 0.332 0.5372
+test loss:  -0.07834016425462906
+test time:  3.486433744430542
+start of epoch  2 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.1460837494358157 -0.0024740358267434834
+time epoch  2  ->  2.6577281951904297
+top k accuracies:  0.1134 0.3366 0.5412
+test loss:  0.013972348654743836
+test time:  3.4934120178222656
+start of epoch  3 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.17161751820215487 0.0015428691855409633
+time epoch  3  ->  2.6879403591156006
+top k accuracies:  0.1064 0.3298 0.5256
+test loss:  -0.04528391906219622
+test time:  3.4963231086730957
+start of epoch  4 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.19052086649429673 0.0038471936733186717
+time epoch  4  ->  2.6909427642822266
+top k accuracies:  0.1222 0.339 0.537
+test loss:  0.0031980133769335226
+test time:  3.581940174102783
+False False
+False False
+start of epoch  0 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.0864892842745007 -0.0864892842745007
+time epoch  0  ->  2.949979066848755
+top k accuracies:  0.234 0.5474 0.7664
+test loss:  -0.7837396851865341
+test time:  3.5438570976257324
+start of epoch  1 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.18244152086994253 -0.18244152086994253
+time epoch  1  ->  2.757451295852661
+top k accuracies:  0.265 0.5906 0.7998
+test loss:  -0.9547281430829782
+test time:  3.416994333267212
+start of epoch  2 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.21594061510301732 -0.21594061510301732
+time epoch  2  ->  2.764235496520996
+top k accuracies:  0.2742 0.604 0.8158
+test loss:  -1.1057195000873878
+test time:  3.6793177127838135
+start of epoch  3 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.2337087326989157 -0.2337087326989157
+time epoch  3  ->  2.7970473766326904
+top k accuracies:  0.2812 0.62 0.8224
+test loss:  -1.1571845042486442
+test time:  3.4188003540039062
+start of epoch  4 for uid  hard_individual_individual_CBOW_bin_non_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.2454960371495978 -0.2454960371495978
+time epoch  4  ->  2.740006923675537
+top k accuracies:  0.2914 0.6234 0.8268
+test loss:  -1.1767810048349667
+test time:  3.4779722690582275
+False False
+False False
+start of epoch  0 for uid  hard_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.14160206403119271 -0.14160206403119271
+time epoch  0  ->  2.132206916809082
+top k accuracies:  0.2508 0.5812 0.7954
+test loss:  -0.2166024938734379
+test time:  3.185563325881958
+start of epoch  1 for uid  hard_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.263475428569022 -0.263475428569022
+time epoch  1  ->  1.942190170288086
+top k accuracies:  0.288 0.6272 0.8266
+test loss:  -0.26956958821577937
+test time:  3.2374958992004395
+start of epoch  2 for uid  hard_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.3023885401104027 -0.3023885401104027
+time epoch  2  ->  1.9415044784545898
+top k accuracies:  0.3142 0.6584 0.8444
+test loss:  -0.28687027819791694
+test time:  3.217611312866211
+start of epoch  3 for uid  hard_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.3246545187154844 -0.3246545187154844
+time epoch  3  ->  1.9219467639923096
+top k accuracies:  0.324 0.6642 0.853
+test loss:  -0.31343636678240727
+test time:  3.1984832286834717
+start of epoch  4 for uid  hard_individual_concat_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.3403461107938113 -0.3403461107938113
+time epoch  4  ->  2.0238842964172363
+top k accuracies:  0.3324 0.6692 0.8564
+test loss:  -0.32317196741341614
+test time:  3.207268238067627
+False False
+False False
+start of epoch  0 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.04022546144476395 -0.020260041512783607
+time epoch  0  ->  3.224385976791382
+top k accuracies:  0.1512 0.421 0.6408
+test loss:  0.12930928931668167
+test time:  3.4296836853027344
+start of epoch  1 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.09074549280870509 -0.07078270820815234
+time epoch  1  ->  2.9636051654815674
+top k accuracies:  0.1752 0.4688 0.6892
+test loss:  -0.08925929301326978
+test time:  3.3695566654205322
+start of epoch  2 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.11829019953947606 -0.07915830867555874
+time epoch  2  ->  2.9648616313934326
+top k accuracies:  0.1752 0.4576 0.6698
+test loss:  0.020635976373136508
+test time:  3.4022316932678223
+start of epoch  3 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.15253232353672963 -0.05903905803870818
+time epoch  3  ->  2.9603111743927
+top k accuracies:  0.1692 0.4436 0.6686
+test loss:  -0.21407224358454113
+test time:  3.450752019882202
+start of epoch  4 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_negbp
+losses:  -0.1830815771337954 -0.039767559282086765
+time epoch  4  ->  2.975372791290283
+top k accuracies:  0.1472 0.409 0.6424
+test loss:  -0.20881869903625921
+test time:  3.448438882827759
+False False
+False False
+start of epoch  0 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.08527666421680359 -0.08527666421680359
+time epoch  0  ->  3.225642442703247
+top k accuracies:  0.2172 0.5386 0.745
+test loss:  -1.3857861617863179
+test time:  3.391559362411499
+start of epoch  1 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.182510597914352 -0.182510597914352
+time epoch  1  ->  3.0857093334198
+top k accuracies:  0.2508 0.578 0.7868
+test loss:  -1.6772220398905222
+test time:  3.3828155994415283
+start of epoch  2 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.2157971489345227 -0.2157971489345227
+time epoch  2  ->  2.9896833896636963
+top k accuracies:  0.262 0.5916 0.8022
+test loss:  -1.9535519943752793
+test time:  3.4253435134887695
+start of epoch  3 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.23323760758229783 -0.23323760758229783
+time epoch  3  ->  2.9601926803588867
+top k accuracies:  0.2704 0.6066 0.8088
+test loss:  -2.028399822987802
+test time:  3.4757564067840576
+start of epoch  4 for uid  hard_individual_individual_CBOW_bin_aug_no_cap_cosine_simple_128_absbp
+losses:  -0.24468564102590715 -0.24468564102590715
+time epoch  4  ->  2.9394960403442383
+top k accuracies:  0.2772 0.6058 0.8136
+test loss:  -2.0580773219259454
+test time:  3.402327060699463
+End

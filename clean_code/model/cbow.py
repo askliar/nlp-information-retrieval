@@ -34,5 +34,5 @@ class CBOW(nn.Module):
             #         x_temp[i] = torch.sum(x[idx:idx + sizes[i], :], 0)
             #         idx += sizes[i]
             #     x = x_temp
-        x = self.proj(F.selu(x))
+        x = self.proj(F.relu(x))
         return x

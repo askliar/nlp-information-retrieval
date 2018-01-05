@@ -133,12 +133,21 @@
 #     N += 1
 #     total_idx += size
 
-
-
-
-
-
-
+#
+# losss = torch.nn.CosineSimilarity()
+# scores = torch.zeros(10)
+# for k in range(10):
+#     dist = losss(text_prediction[total_idx: (total_idx + size)],
+#                  img_feat[i * 10 + k].view(1, -1).expand(size, 2048)).mean()
+#     scores[k] = torch.mean(dist).data[0]
+# test_loss += scores[target.data[i]]
+# if len(target.size()) > 1:
+#     target = target.view(-1)
+# top1 += 1 if target.data[i] in scores.topk(1, largest=False)[1] else 0
+# top3 += 1 if target.data[i] in scores.topk(3, largest=False)[1] else 0
+# top5 += 1 if target.data[i] in scores.topk(5, largest=False)[1] else 0
+#
+#
 
 
 
@@ -188,3 +197,27 @@
     #     # del labels
     #     print "after delete:"
 #     show_memusage(device=device)
+
+
+# for i, size in enumerate(sizes):
+#     if i == 0:
+#         if config.cosine_similarity:
+#             # loss = cosine_similarity(out[:size, i], img_prediction[i]).sum()
+#             loss = - F.cosine_similarity(out[:size, i],
+#                                          img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
+#         else:
+#             # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
+#             # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
+#             loss = torch.pow(
+#                 F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))),
+#                 2).sum()
+#     else:
+#         if config.cosine_similarity:
+#             # loss += cosine_similarity(out[:size, i], img_prediction[i]).sum()
+#             loss += - F.cosine_similarity(out[:size, i],
+#                                           img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))).sum()
+#         else:
+#             # aa = mean_squared_error(out[:size, i], img_prediction[i]).sum()
+#             loss += torch.pow(
+#                 F.pairwise_distance(out[:size, i], img_prediction[i].view(1, -1).expand(size, img_prediction.size(1))),
+#                 2).sum()

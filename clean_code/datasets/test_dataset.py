@@ -43,6 +43,8 @@ class TestDataSet(GenericDataSet):
         questions_int = []
         for question in questions:
             answer = question.split('?')[1].strip().lower()
+            if answer == 'nope':
+                question = question.replace('nope', 'no')
             is_binary = answer == 'yes' or answer == 'no'
             if is_binary:
                 question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)

@@ -2,7 +2,8 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+import numpy as np
 class RNN1(nn.Module):
     def __init__(self, vocab_size, img_feat_size, target_size, CUDA):
         super(RNN1, self).__init__()
@@ -22,22 +23,33 @@ class RNN1(nn.Module):
     def forward(self, input_text, hidden=None):
         # input_text = input_text.view(input_text.size(0), -1)
         x = self.embeddings(input_text)
-        y = x.view(x.size(1), x.size(0), -1)
+        # y = x.view(x.size(1), x.size(0), -1).contiguous()
+        y = x
+        lens = torch.LongTensor(np.count_nonzero(input_text.data.cpu().numpy(), axis=0)).cuda()
+        lens1 = torch.LongTensor(np.count_nonzero(input_text.data.cpu().numpy(), axis=1)).cuda()
+        # print(lens, lens1, lens2)
+        # print(y.size(), [a for a in lens1[:, 0]])
+
+        lengths, ind = torch.sort(lens1, 0, descending=True)
+        y = pack_padded_sequence(y[ind], list(lengths), batch_first=True)
         if hidden is None:
             hidden = Variable(torch.zeros(1, x.size(0), self.img_feat_size))
             if self.CUDA:
                 hidden = hidden.cuda()
 
-        # if sizes is not None:
-        #     question_sets_amount = sizes.size(0)
-        #     x_temp = Variable(torch.zeros(question_sets_amount))
-        #     if self.CUDA:
-        #         x_temp = x_temp.cuda()
-        #     idx = 0
-        #     for i in range(question_sets_amount):
-        #         x_temp[i] = torch.sum(x[idx:idx + sizes[i]])
-        #         idx += sizes[i]
-        #     x = x_temp
+        # packed_out, packed_hidden = self.rnn(y, hidden)
         out, hidden = self.rnn(y, hidden)
-        x = self.proj(hidden.squeeze())
+        # packed_hidden = packed_hidden[ind]
+        # output, hidden = pad_packed_sequence(packed_out)
+        # print(output)
+        # hidden = torch.gather(1, )
+        # unsorted = input_text.new(*input_text.size())
+        # input_text.scatter_(0, ind, input_text)
+        # seq_end_idx = Variable(lens1)
+
+        # row_indices = torch.arange(0, x.size(0)).long().cuda()
+        # hidden = out[seq_end_idx, row_indices, :]
+        # x = self.proj(packed_hidden.squeeze()[ind])
+        _, revert_ind = ind.sort()
+        x = self.proj(F.relu(hidden.squeeze()[revert_ind]))
         return x

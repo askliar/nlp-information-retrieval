@@ -7,7 +7,8 @@ from utilities.nltk_helpers import stop
 class Config():
     def __init__(self, remove_nonbinary=True, include_captions=False, augment_binary=True, cosine_similarity=True,
                  image_layer='None', projection='CBOW', sequential=False, concat=False,
-                 batch_size=256, test_batch_size=32, complexity='easy', learning_rate=0.00001):
+                 batch_size=256, test_batch_size=32, complexity='easy', learning_rate=0.00001,
+                 neg_backprop='True'):
         self.DEBUG = False
         self.CUDA = torch.cuda.is_available()
         self.stem = False
@@ -18,6 +19,8 @@ class Config():
         self.stopwords = False
         self.stop = None
 
+        self.emb_size = 256
+
         torch.manual_seed(42)
 
         self.learning_rate = learning_rate
@@ -26,6 +29,8 @@ class Config():
         self.text_data = 'data/text_data'
         self.complexity = complexity
         self.image_layer = image_layer
+        self.neg_backprop = neg_backprop
+        self.neg_backprop_str = 'negbp' if self.neg_backprop == True else 'absbp'
         self.image_layer_str = 'simple' if self.image_layer == 'None' else self.image_layer
         self.remove_nonbinary = remove_nonbinary
         self.remove_nonbinary_str = 'bin' if self.remove_nonbinary else 'all'
@@ -48,9 +53,10 @@ class Config():
         self.stem_str = 'stem' if self.stem else 'no_stem'
         self.stop_str = 'stop' if self.stopwords else 'no_stop'
 
-        self.uid_str = str.format('{}_{}_{}_{}_{}_{}_{}_{}_{}_{}', self.complexity, self.sequential_str, self.concat_str, self.projection_str,
+        self.uid_str = str.format('{}_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}', self.complexity, self.sequential_str, self.concat_str, self.projection_str,
                                   self.remove_nonbinary_str, self.augment_binary_str, self.include_captions_str,
-                                  self.cosine_similarity_str, self.image_layer_str, str(batch_size))
+                                  self.cosine_similarity_str, self.image_layer_str, str(batch_size),
+                                  self.neg_backprop_str)
         self.pickle_uid_str = str.format('{}_{}_{}_{}_{}_{}', self.stem_str, self.stop_str, self.remove_nonbinary_str, self.augment_binary_str,
                                          self.include_captions_str, self.concat_str)
 
