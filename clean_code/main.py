@@ -14,7 +14,7 @@ import time
 import pickle
 from model.image_layers import MLP1, MLP2
 from utilities.data_helpers import plot_histogram
-
+import gc
 from utilities.helper_functions import str2bool
 from model.rnn2 import RNN2
 import itertools
@@ -195,6 +195,16 @@ def main():
             model.parameters(),
             lr=config.learning_rate * lr_mult
         )
+    # if rnn2 != None:
+    #     optimizer = optim.SGD(
+    #                 itertools.chain(model.parameters(), rnn2.parameters()),
+    #                 lr=config.learning_rate * lr_mult, momentum=0.5
+    #     )
+    # else:
+    #     optimizer = optim.SGD(
+    #         model.parameters(),
+    #         lr=config.learning_rate * lr_mult, momentum=0.5
+    #     )
     # model = torch.load('../results/checkpoint_22')
     # test(model, dataloader_val)
 
@@ -263,7 +273,7 @@ def main():
         pickle.dump(plot_list, open(str.format('data/{}/plot_list.pkl', config.uid_str), 'wb'))
         # torch.cuda.synchronize()
         # torch.cuda.empty_cache()
-
+        gc.collect()
     # torch.cuda.synchronize()
     # torch.cuda.empty_cache()
     import matplotlib.pyplot as plt

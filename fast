@@ -1,0 +1,144 @@
+Timer unit: 1e-06 s
+
+Total time: 1.36101 s
+File: clean_code/model/rnn1.py
+Function: forward at line 22
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    22                                               @profile
+    23                                               def forward(self, input_text, hidden=None):
+    24                                                   # input_text = input_text.view(input_text.size(0), -1)
+    25        20        41851   2092.6      3.1          x = self.embeddings(input_text)
+    26                                                   # y = x.view(x.size(1), x.size(0), -1).contiguous()
+    27        20           61      3.0      0.0          y = x
+    28                                                   # lens = torch.LongTensor(np.count_nonzero(input_text.data.cpu().numpy(), axis=0))#.cuda()
+    29        20        18446    922.3      1.4          lens1 = torch.LongTensor(np.count_nonzero(input_text.data.cpu().numpy(), axis=1))#.cuda()
+    30        20           93      4.7      0.0          if self.CUDA:
+    31        20         5128    256.4      0.4              lens1 = lens1.cuda()
+    32                                                   # print(lens, lens1, lens2)
+    33                                                   # print(y.size(), [a for a in lens1[:, 0]])
+    34                                           
+    35        20         7740    387.0      0.6          lengths, ind = torch.sort(lens1, 0, descending=True)
+    36        20       570008  28500.4     41.9          y = pack_padded_sequence(y[ind], list(lengths), batch_first=True)
+    37        20           52      2.6      0.0          if hidden is None:
+    38        20         4076    203.8      0.3              hidden = Variable(torch.zeros(1, x.size(0), self.img_feat_size))
+    39        20           59      3.0      0.0              if self.CUDA:
+    40        20        18730    936.5      1.4                  hidden = hidden.cuda()
+    41                                           
+    42                                                   # packed_out, packed_hidden = self.rnn(y, hidden)
+    43        20       454058  22702.9     33.4          out, hidden = self.rnn(y, hidden)
+    44                                                   # packed_hidden = packed_hidden[ind]
+    45                                                   # output, hidden = pad_packed_sequence(packed_out)
+    46                                                   # print(output)
+    47                                                   # hidden = torch.gather(1, )
+    48                                                   # unsorted = input_text.new(*input_text.size())
+    49                                                   # input_text.scatter_(0, ind, input_text)
+    50                                                   # seq_end_idx = Variable(lens1)
+    51                                           
+    52                                                   # row_indices = torch.arange(0, x.size(0)).long().cuda()
+    53                                                   # hidden = out[seq_end_idx, row_indices, :]
+    54                                                   # x = self.proj(packed_hidden.squeeze()[ind])
+    55        20         6728    336.4      0.5          _, revert_ind = ind.sort()
+    56        20       233935  11696.8     17.2          x = self.proj(F.relu(hidden.squeeze()[revert_ind]))
+    57        20           44      2.2      0.0          return x
+
+Total time: 3.74464 s
+File: clean_code/model/train.py
+Function: train at line 21
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    21                                           @profile
+    22                                           def train(model, rnn2, image_layer, optimizer, loader, config):
+    23         1           91     91.0      0.0      model.train()
+    24         1            1      1.0      0.0      CUDA = config.CUDA
+    25         1           95     95.0      0.0      bceloss = torch.nn.BCELoss()
+    26         1            2      2.0      0.0      train_loss = 0.0
+    27         1            1      1.0      0.0      positive = 0.0
+    28         1            1      1.0      0.0      n_batches = 0
+    29         1            1      1.0      0.0      j = 0
+    30        20       153150   7657.5      4.1      for batch in loader:
+    31        20          994     49.7      0.0          print('done ', j)
+    32        20        82636   4131.8      2.2          torch.cuda.empty_cache()
+    33        20          159      8.0      0.0          startb = time.time()
+    34                                                   # if j > 10:
+    35                                                   #     break
+    36        20           55      2.8      0.0          j += 1
+    37                                           
+    38                                                   # exclude sizes->Variable conversion, because we don't use it for backpropagation
+    39        20          174      8.7      0.0          sizes = batch['size']
+    40        20          234     11.7      0.0          text, img_feat, target = Variable(batch['text']), \
+    41        20           97      4.8      0.0                                          Variable(batch['img_feat']), \
+    42        20          249     12.4      0.0                                          Variable(batch['target'])
+    43        20           36      1.8      0.0          if CUDA:
+    44        20        66615   3330.8      1.8              text, img_feat, target, sizes = text.cuda(), \
+    45        20        34707   1735.3      0.9                                              img_feat.cuda(), \
+    46        20         3699    184.9      0.1                                              target.cuda(), \
+    47        20         1618     80.9      0.0                                              sizes.cuda()
+    48                                                   # device = 0
+    49                                                   # show_memusage(device=device)
+    50        20        24993   1249.7      0.7          optimizer.zero_grad()
+    51                                                   # if config.concat:
+    52                                                   #     text_prediction = model(text)
+    53                                                   # else:
+    54        20      1362477  68123.9     36.4          text_prediction = model(text)
+    55        20           76      3.8      0.0          img_prediction = img_feat
+    56                                                   # if not config.neg_backprop:
+    57                                                       # print('using absolute')
+    58                                                       # target = torch.abs(target)
+    59        20           35      1.8      0.0          if image_layer != None:
+    60                                                       print('using image layer')
+    61                                                       img_prediction = image_layer(img_feat)
+    62        20           58      2.9      0.0          if config.sequential:
+    63                                                       maxlen = torch.max(sizes)
+    64                                                       reshaped_tensor = Variable(torch.zeros(sizes.size(0), maxlen, config.emb_size).cuda())
+    65                                                       if CUDA:
+    66                                                           reshaped_tensor = reshaped_tensor.cuda()
+    67                                                       tot_idx = 0
+    68                                                       for i, size in enumerate(sizes):
+    69                                                           reshaped_tensor[i, :, :] = F.pad(text_prediction[tot_idx:tot_idx + size], (0, 0, 0, maxlen - size), 'constant', 0)
+    70                                                           tot_idx += size
+    71                                                       out = rnn2(reshaped_tensor, sizes=sizes)
+    72                                                       if config.cosine_similarity:
+    73                                                           loss = - F.cosine_similarity(out, img_prediction).sum()
+    74                                                       else:
+    75                                                           loss = torch.pow(F.pairwise_distance(out, img_prediction), 2).sum()
+    76                                                       loss = loss / sizes.size(0)
+    77                                                       # print(loss)
+    78                                                       train_loss += loss.data[0]
+    79                                                       positive += 0.0
+    80                                           
+    81                                                   else:
+    82        20           33      1.6      0.0              if config.concat:
+    83                                                           idx = torch.LongTensor([x for x in range(sizes.size(0))])
+    84                                                       else:
+    85        20        85365   4268.2      2.3                  idx = torch.LongTensor([x for x in range(sizes.size(0)) for kk in range(sizes[x])])
+    86                                                       # print('timeee -- ', time.time() - st)
+    87        20           49      2.5      0.0              if CUDA:
+    88        20         3386    169.3      0.1                  idx = idx.cuda()
+    89        20           50      2.5      0.0              if config.cosine_similarity:
+    90        20       118621   5931.1      3.2                  distances = - F.cosine_similarity(text_prediction, img_prediction[idx])
+    91                                                       else:
+    92                                                           distances = torch.pow(F.pairwise_distance(text_prediction, img_prediction[idx]), 2)
+    93                                                           # distances = (1 / img_prediction.size(1)) * torch.pow(F.pairwise_distance(text_prediction, img_prediction[idx]), 2)
+    94        20           73      3.6      0.0              if config.concat:
+    95                                                           loss = distances.mean()
+    96                                                       else:
+    97        20        23174   1158.7      0.6                  loss = (distances * target).mean()
+    98                                                           # distances = (1+distances) / 2
+    99                                                           # target = target.detach()
+   100                                                           # target = (1+target) / 2
+   101                                                           # print(distances.size(), target.size())
+   102                                                           # loss = bceloss(distances, 1 - target)
+   103                                                           # losss = torch.nn.CosineSimilarity()
+   104                                                           # loss = losss(text_prediction, img_prediction[idx]).mean()
+   105        20         3343    167.2      0.1              train_loss += loss[0]
+   106        20         1910     95.5      0.1              positive += distances.mean().data[0]
+   107                                           
+   108        20           50      2.5      0.0          n_batches += 1
+   109        20      1631406  81570.3     43.6          loss.backward()
+   110        19       144926   7627.7      3.9          optimizer.step()
+   111                                           
+   112                                               return train_loss, positive, train_loss / n_batches, positive / n_batches
+

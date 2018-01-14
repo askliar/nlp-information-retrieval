@@ -18,7 +18,7 @@ class CBOW(nn.Module):
         self.proj = nn.Linear(img_feat_size, target_size)
         self.CUDA = CUDA
         self.img_feat_size = img_feat_size
-
+        self.fc2 = nn.Linear(target_size, target_size)
     def forward(self, input_text):
         input_text = input_text.view(input_text.size(0), -1)
         x = self.embeddings(input_text)
@@ -35,4 +35,5 @@ class CBOW(nn.Module):
             #         idx += sizes[i]
             #     x = x_temp
         x = self.proj(F.relu(x))
+        # x = self.fc2(F.relu(x))
         return x

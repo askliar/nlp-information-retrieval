@@ -53,18 +53,22 @@ class QuestionsDataSet(GenericDataSet):
             if answer == 'nope':
                 question = question.replace('nope', 'no')
             is_binary = answer == 'yes' or answer == 'no'
+            #TODO: remember that this eliminates answers like: 'no, the hat is red'
+            # print(question)
             if is_binary:
+                # l1, l2 = len(question.split('?')[0]), len(question.split('?')[1])
+                # print("heh --> ", question)
                 question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                 question_int = self.text2int(question_preprocessed)
-                if len(question_int) > 20:
+                if len(question_int) > 15:
                     continue
                 self.sentences_histograms[len(question_int)] += 1
-                answer_int = 1 if answer == 'yes' else -1
+                answer_int = 1 #if answer == 'yes' else -1
                 if self.augment_binary:
                     augmented_question_int = question_int[:-1] + [
                         (self.vocab['no'] if answer == 'yes' else self.vocab['yes'])]
                     # BOOKMARK: orig questions
-                    augmented_answer_int = -answer_int
+                    augmented_answer_int = -1#answer_int
                     if self.concat:
                         questions_int.extend(question_int + augmented_question_int)
                     else:
@@ -83,7 +87,7 @@ class QuestionsDataSet(GenericDataSet):
                 else:
                     question_preprocessed = self.preprocess_text(question, stem, stopwords, stop_vocab)
                     question_int = self.text2int(question_preprocessed)
-                    if len(question_int) > 20:
+                    if len(question_int) > 15:
                         continue
                     self.sentences_histograms[len(question_int)] += 1
                     answer_int = 1

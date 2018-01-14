@@ -1,6 +1,6 @@
 import pickle
 import time
-
+from visualize import make_dot
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -18,20 +18,24 @@ def show_memusage(device=0):
     item = gpu_stats.jsonify()["gpus"][device]
     print("{}/{}".format(item["memory.used"], item["memory.total"]))
 
-
+# @profile
 def train(model, rnn2, image_layer, optimizer, loader, config):
+    torch.backends.cudnn.enabled = False
     model.train()
     CUDA = config.CUDA
-
+    bceloss = torch.nn.BCELoss()
     train_loss = 0.0
     positive = 0.0
     n_batches = 0
     j = 0
     for batch in loader:
+        # print('done ', j)
+        # torch.cuda.empty_cache()
+
         startb = time.time()
-        # if j > 2:
+        # if j > 10:
         #     break
-        # j += 1
+        j += 1
 
         # exclude sizes->Variable conversion, because we don't use it for backpropagation
         sizes = batch['size']
@@ -43,8 +47,8 @@ def train(model, rnn2, image_layer, optimizer, loader, config):
                                             img_feat.cuda(), \
                                             target.cuda(), \
                                             sizes.cuda()
-        # device = 0
-        # show_memusage(device=device)
+        device = 0
+        show_memusage(device=device)
         optimizer.zero_grad()
         # if config.concat:
         #     text_prediction = model(text)
@@ -55,7 +59,7 @@ def train(model, rnn2, image_layer, optimizer, loader, config):
             # print('using absolute')
             target = torch.abs(target)
         if image_layer != None:
-            print('using image layer')
+            # print('using image layer')
             img_prediction = image_layer(img_feat)
         if config.sequential:
             maxlen = torch.max(sizes)
@@ -93,15 +97,23 @@ def train(model, rnn2, image_layer, optimizer, loader, config):
                 loss = distances.mean()
             else:
                 loss = (distances * target).mean()
+                # distances = (1+distances) / 2
+                # target = target.detach()
+                # target = (1+target) / 2
+                # print(distances.size(), target.size())
+                # loss = bceloss(distances, 1 - target)
                 # losss = torch.nn.CosineSimilarity()
                 # loss = losss(text_prediction, img_prediction[idx]).mean()
-            train_loss += loss.data[0]
+            train_loss += loss[0]
+            # print(make_dot(loss))
             positive += distances.mean().data[0]
 
         n_batches += 1
         loss.backward()
         optimizer.step()
-
+        # optimizer.zero_grad()
+        # del loss, distances, idx, text_prediction, img_prediction
+        torch.cuda.empty_cache()
     return train_loss, positive, train_loss / n_batches, positive / n_batches
 
 

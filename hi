@@ -1,0 +1,1000 @@
+ 1007  cd ~/Documents/torcs-server/torcs-1.3.7-patched/
+ 1008  ls
+ 1009  ./reinstall 
+ 1010  ls
+ 1011  torcs
+ 1012  ./reinstall 
+ 1013  cd ../torcs-client/neat_model/
+ 1014  python run.py --conf config/config_test0.yaml 
+ 1015  python start_script.py --conf config/config_test5.yaml
+ 1016  cd ..
+ 1017  git add --all
+ 1018  git status
+ 1019  git commit -m 'mod checkpoints'
+ 1020  git push origin master
+ 1021  cd ..
+ 1022  git add --all
+ 1023  git statu
+ 1024  git status
+ 1025  git commit -m 'add wheels file'
+ 1026  git push origin master
+ 1027  htop
+ 1028  htop
+ 1029  python start_script.py --conf config/config_test5.yaml
+ 1030  python start_script.py --conf config/config_test1.yaml
+ 1031  python start_script.py --conf config/config_test7.yaml
+ 1032  python start_script.py --conf config/config_test2.yaml
+ 1033  cd ../..
+ 1034  cd torcs-1.3.7-patched/
+ 1035  ./reinstall
+ 1036  cd ../torcs-client/neat_model/
+ 1037  ls
+ 1038  python start_script.py --conf config/config_test0.yaml 
+ 1039  ps -aux | grep torcs
+ 1040  torcs 
+ 1041  python start_script.py --conf config/config_test0.yaml 
+ 1042  python start_script.py --conf config/config_test0.yaml
+ 1043  python start_script.py --conf config/config_test3.yaml
+ 1044  htop
+ 1045  python start_script.py --conf config/config_test5.yaml
+ 1046  cd Documents/torcs-server/torcs-client/
+ 1047  cd neat_model/
+ 1048  ls
+ 1049  ./run.py --conf config/config_test5.yaml
+ 1050  ./run.py --conf config/config_test2.yaml
+ 1051  ./run.py --conf config/config_test3.yaml
+ 1052  python start_script.py --conf config/config_test5.yaml
+ 1053  python start_script.py --conf config/config_test0.yaml
+ 1054  python start_script.py --conf config/config_test1.yaml
+ 1055  git clone https://github.com/emohat1r/nlp-information-retrieval.git
+ 1056  ls
+ 1057  cd nlp-information-retrieval/l
+ 1058  ls
+ 1059  rm -f z
+ 1060  cd nlp-information-retrieval/
+ 1061  ls
+ 1062  watch -n 1 nvidia-smi
+ 1063  kernprof -l train.py
+ 1064  kernprof -l clean_model.py
+ 1065  python -m line_profiler clean_model.py.lprof > times4
+ 1066  gedit times4
+ 1067  kernprof -l clean_model.py
+ 1068  python -m line_profiler clean_model.py.lprof > times5
+ 1069  gedit times5
+ 1070  kernprof -l clean_model.py
+ 1071  python -m line_profiler clean_model.py.lprof > times6
+ 1072  gedit times6
+ 1073  kernprof -l clean_model.py
+ 1074  python -m line_profiler clean_model.py.lprof > times7
+ 1075  gedit times7
+ 1076  watch -n 1 nvidia-smi
+ 1077  kernprof -l clean_model.py
+ 1078  python -m line_profiler clean_model.py.lprof > times8
+ 1079  gedit times8
+ 1080  kernprof -l clean_model.py
+ 1081  python -m line_profiler clean_model.py.lprof > times9
+ 1082  gedit times9
+ 1083  kernprof -l clean_model.py
+ 1084  python -m line_profiler clean_model.py.lprof > times9
+ 1085  gedit times9
+ 1086  kernprof -l clean_model.py
+ 1087  python -m line_profiler clean_model.py.lprof > times10
+ 1088  gedit times10
+ 1089  kernprof -l clean_model.py
+ 1090  python -m line_profiler clean_model.py.lprof > times10
+ 1091  gedit times10
+ 1092  kernprof -l clean_model.py
+ 1093  python -m line_profiler clean_model.py.lprof > times11
+ 1094  kernprof -l clean_model.py
+ 1095  python -m line_profiler clean_model.py.lprof > times12
+ 1096  kernprof -l clean_model.py
+ 1097  python -m line_profiler clean_model.py.lprof > times13
+ 1098  kernprof -l clean_model.py
+ 1099  python -m line_profiler clean_model.py.lprof > times13
+ 1100  git add --all
+ 1101  git status
+ 1102  git commit -m 'add train function'
+ 1103  git push origin master
+ 1104  kernprof -l clean_model.py
+ 1105  python -m line_profiler clean_model.py.lprof > times14
+ 1106  kernprof -l clean_model.py
+ 1107  python -m line_profiler clean_model.py.lprof > times14
+ 1108  kernprof -l clean_model.py
+ 1109  python start_script.py --conf config/config_test6.yaml
+ 1110  python start_script.py --conf config/config_test7.yaml
+ 1111  python start_script.py --conf config/config_test8.yaml
+ 1112  watch -n 1 nvidia-smi
+ 1113  kernprof -l clean_model.py
+ 1114  python -m line_profiler clean_model.py.lprof > times15
+ 1115  gedit times15
+ 1116  kernprof -l clean_model.py
+ 1117  python -m line_profiler clean_model.py.lprof > times15
+ 1118  gedit times15
+ 1119  torcs
+ 1120  python run.py --conf config/config_test1.yaml
+ 1121  python run.py --conf config/config_test2.yaml
+ 1122  python run.py --conf config/config_test2.yaml -rel neat_results/exp2/_winner.pkl 
+ 1123  python run.py --conf config/config_test2.yaml --rel neat_results/exp2/_winner.pkl 
+ 1124  python run.py --conf config/config_test3.yaml --rel neat_results/exp2/_winner.pkl 
+ 1125  python run.py --conf config/config_test3.yaml --rel neat_results/exp3/_winner.pkl 
+ 1126  python run.py --conf config/config_test0.yaml --rel neat_results/exp0/_winner.pkl 
+ 1127  python run.py --conf config/config_test3.yaml --rel neat_results/exp0/_winner.pkl 
+ 1128  python run.py --conf config/config_test3.yaml --rel neat_results/exp3/_winner.pkl 
+ 1129  torcs
+ 1130  git add --all
+ 1131  git status
+ 1132  git commit -m 'add better breaking'
+ 1133  git push origin master
+ 1134  python
+ 1135  cd Documents/torcs-server/torcs-client/
+ 1136  git add --all
+ 1137  git status
+ 1138  git commit -m 'add lookahead'
+ 1139  git push origin master
+ 1140  git add --all
+ 1141  git status
+ 1142  git push origin master
+ 1143  ./run.py 
+ 1144  torcs
+ 1145  cd Documents/torcs-server/torcs-client/
+ 1146  ./run.py 
+ 1147  python
+ 1148  cd Documents/torcs-server/torcs-client/
+ 1149  cd neat_model/
+ 1150  ls
+ 1151  python start_script.py --conf config/config_test0.yaml
+ 1152  ./start.sh
+ 1153  chmod u+x start.sh 
+ 1154  ./start.sh
+ 1155  torcs
+ 1156  python start_script.py --conf config/config_test2.yaml
+ 1157  cd ~/Documents/torcs-server/torcs-client/neat_model/
+ 1158  ls
+ 1159  python run.py --config config/config_test0.yaml 
+ 1160  python run.py --conf config/config_test1.yaml 
+ 1161  python start_script.py --conf config/config_test1.yaml 
+ 1162  python start_script.py --conf config/config_test1.yaml
+ 1163  python start_script.py --conf config/config_test1.yaml 
+ 1164  torcs
+ 1165  cd ~/Documents/torcs-server/torcs-client/neat_model/
+ 1166  ls
+ 1167  python start_script.py --conf config/config_test1.yaml 
+ 1168  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test1.xml 
+ 1169  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test0.xml 
+ 1170  ls
+ 1171  torcs -r ~/Documents/torcs-server/example_torcs_config.xml 
+ 1172  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test9.xml 
+ 1173  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test.xml
+ 1174  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test2.xml
+ 1175  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test.xml
+ 1176  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test1.xml
+ 1177  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test2.xml
+ 1178  ls
+ 1179  netstat | grep 3001
+ 1180  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test1.xml
+ 1181  torcs
+ 1182  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test1.xml 
+ 1183  python start_script.py --conf config/config_test1.yaml 
+ 1184  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test0.xml 
+ 1185  python start_script.py --conf config/config_test1.yaml 
+ 1186  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test0.xml 
+ 1187  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test2.xml 
+ 1188  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test1.xml 
+ 1189  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test0.xml 
+ 1190  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test2.xml 
+ 1191  torcs
+ 1192  python start_script.py --conf config/config_test0.yaml 
+ 1193  synclient 
+ 1194  ls /dev/sd*
+ 1195  sudo apt-cache show fuck
+ 1196  synaptic
+ 1197  synaptics
+ 1198  synclient
+ 1199  htop
+ 1200  htop -d 0.1
+ 1201  python start_script.py --conf config/config_test1.yaml 
+ 1202  torcs
+ 1203  cd Documents/torcs-server/torcs-client/
+ 1204  ls
+ 1205  cd neat_model/
+ 1206  ls
+ 1207  python start_script.py --conf config/config_test0.yaml 
+ 1208  torcs
+ 1209  python
+ 1210  watch -n 1 nvidia-smi
+ 1211  torcs
+ 1212  cd Documents/torcs-server/torcs-client/
+ 1213  ls
+ 1214  python start_script.py --conf config/config_test0.yaml 
+ 1215  cd neat_model/
+ 1216  python start_script.py --conf config/config_test0.yaml 
+ 1217  python start_script.py --conf config/config_test0.yaml --rel neat_results/exp0/_winner.pkl 
+ 1218  python run.py --conf config/config_test0.yaml --rel neat_results/exp0/_winner.pkl 
+ 1219  cd ..
+ 1220  ./run.py 
+ 1221  git add --all
+ 1222  git status
+ 1223  git commit -m 'improved sgd'
+ 1224  git push origin master
+ 1225  git add --all
+ 1226  git commit -m 'improved sgd'
+ 1227  git push origin master
+ 1228  git add --all
+ 1229  git commit -m 'improved sgd'
+ 1230  git push origin master
+ 1231  git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch neat_model.tar.gz' 
+ 1232  git add --all
+ 1233  git commit -am 'remove big files'
+ 1234  git push
+ 1235  torcs
+ 1236  nvidia-smi
+ 1237  torcs
+ 1238  nvidia -i
+ 1239  nvi
+ 1240  nvidia-msi
+ 1241  nvidia-s
+ 1242  nvidia-smi
+ 1243  python start_script.py --conf config/config_test1.yaml
+ 1244  torcs
+ 1245  cd Documents/torcs-server/torcs-client/
+ 1246  ls
+ 1247  cd neat_model/
+ 1248  python start_script.py --conf config/config_test0.yaml
+ 1249  torcs
+ 1250  cd torcs-client/
+ 1251  ls
+ 1252  python cpu_converter.py 
+ 1253  python cpu_converter.py pre_train/models/mod_temporal_torch_3
+ 1254  python cpu_converter.py --file pre_train/models/mod_temporal_torch_3
+ 1255  gedit .giti
+ 1256  cd ..
+ 1257  gedit .gitignore 
+ 1258  git add --all
+ 1259  git status
+ 1260  git commit -m 'add checkpoints'
+ 1261  git push origin master
+ 1262  la -alh
+ 1263  git add --all
+ 1264  git status
+ 1265  git commit -m 'add cpu converter'
+ 1266  git push origin master
+ 1267  torcs
+ 1268  cd Documents/torcs-server/torcs-client/
+ 1269  python cpu_converter.py --file pre_train/models/mod_temporal_torch_3
+ 1270  python cpu_converter.py --file pre_train/models/mod_temporal_torch_3*
+ 1271  python cpu_converter.py --file pre_train/models/mod_temporal_torch_3_new_opp
+ 1272  python cpu_converter.py --file pre_train/models/mod_temporal_torch_3_new_opp2
+ 1273  cd Documents/
+ 1274  cd torcs-server/torcs-client/
+ 1275  python cpu_converter.py --file pre_train/models/mod_temporal_torch_1
+ 1276  bash start
+ 1277  bash start.sh 
+ 1278  bash start2.sh 
+ 1279  chmod u+x start2.sh 
+ 1280  ./start2.sh 
+ 1281  vim start2.sh 
+ 1282  bash start2.sh 
+ 1283  vim start2.sh 
+ 1284  ./start2.sh 
+ 1285  bash ./start2.sh 
+ 1286  sh ./start2.sh 
+ 1287  cat start.sh 
+ 1288  ./start.sh 
+ 1289  vim start2.sh 
+ 1290  sh ./start2.sh 
+ 1291  vim run.py 
+ 1292  cat start2.sh 
+ 1293  cat run.py 
+ 1294  vim run.py
+ 1295  vim run2.py 
+ 1296  vim run.py 
+ 1297  ./start2.sh 
+ 1298  cat start.sh 
+ 1299  rm start.sh 
+ 1300  mv start2.sh start.sj
+ 1301  mv start.sj start.sh
+ 1302  cat start.sh 
+ 1303  :q
+ 1304  cd torcs-server/torcs-client/
+ 1305  cd Documents/
+ 1306  cd torcs-server/torcs-client/
+ 1307  python cpu_converter.py --file pre_train/models/mod_temporal_torch_1
+ 1308  python cpu_converter.py --file pre_train/models/mod_temporal_torch_15
+ 1309  python cpu_converter.py --file pre_train/models/mod_temporal_torch_3_new_opp2
+ 1310  rm pre_train/models/mod_temporal_torch_3_new_opp2_cpu 
+ 1311  git add --all
+ 1312  git status
+ 1313  git commit -m 'add correct model loading'
+ 1314  git push origin master
+ 1315  torcs
+ 1316  python run.py -p 3001
+ 1317  git add --all
+ 1318  git status
+ 1319  git commint -m 'merged swarm'
+ 1320  git commit -m 'merged swarm'
+ 1321  git push origin master
+ 1322  python run.py -p 3001
+ 1323  git add --all
+ 1324  git status
+ 1325  git commit -m 'modified gear change'
+ 1326  git push origin master
+ 1327  git add --all
+ 1328  git commit -m 'modified gear change'
+ 1329  git push origin master
+ 1330  python run.py -p 3001
+ 1331  python start_script.py --conf config/config_data_agg.yaml --track aalborg|road
+ 1332  python start_script.py --conf config/config_data_agg.yaml --track 'aalborg|road'
+ 1333  htop -d 0.091
+ 1334  python start_script.py --conf config/config_data_agg.yaml --track aalborg|road
+ 1335  python start_script.py --conf config/config_data_agg.yaml --track 'aalborg|road\
+ 1336  python start_script.py --conf c
+ 1337  ls ../config/
+ 1338  torcs
+ 1339  python start_script.py --conf config/config_data_agg.yaml --track 'aalborg|road\
+ 1340  arr=( dirt-1\|dirt dirt-2\|dirt dirt-3\|dirt dirt-4\|dirt dirt-5\|dirt dirt-6\|dirt a-speedway\|oval b-speedway\|oval c-speedway\|oval d-speedway\|oval e-speedway\|oval f-speedway\|oval g-speedway\|oval michigan\|oval mixed-1\|dirt mixed-2\|dirt ruudskogen\|road g-track-1\|road alpine-1\|road alpine-2\|road brondehach\|road corkscrew\|road e-track-2\|road e-track-3\|road e-track-3\|road forza\|road g-track-2\|road g-track-3\|road ole-road-1\|road ruudskogen\|road spring\|road street-1\|road wheel-1\|road wheel-2\|road )
+ 1341  for i in "${arr[@]}"; do python start_script.py --conf config/config_data_agg.yaml --track $i; done
+ 1342  python run.py -p 3002
+ 1343  htop -d 0.01
+ 1344  torcs -nodamage
+ 1345  torcs
+ 1346  cd Documents/torcs-server/
+ 1347  gedit config/example_torcs_config_test.xml 
+ 1348  torcs -r config/example_torcs_config_test.xml 
+ 1349  torcs -r ~/Documents/torcs-server/config/example_torcs_config_test.xml 
+ 1350  cd ~/Documents/torcs-server/torcs-client/
+ 1351  python run.py -p 3002
+ 1352  ps -aux | grep torcs  | grep -o "^[  ][0-9]" | xargs kill -KILL
+ 1353  ps -aux | grep torcs
+ 1354  >arr=( dirt-1\|dirt dirt-2\|dirt dirt-3\|dirt dirt-4\|dirt dirt-5\|dirt dirt-6\|dirt a-speedway\|oval b-speedway\|oval c-speedway\|oval d-speedway\|oval e-speedway\|oval f-speedway\|oval g-speedway\|oval michigan\|oval mixed-1\|dirt mixed-2\|dirt ruudskogen\|road g-track-1\|road alpine-1\|road alpine-2\|road brondehach\|road corkscrew\|road e-track-2\|road e-track-3\|road e-track-3\|road forza\|road g-track-2\|road g-track-3\|road ole-road-1\|road ruudskogen\|road spring\|road street-1\|road wheel-1\|road wheel-2\|road )
+ 1355  arr=( dirt-1\|dirt dirt-2\|dirt dirt-3\|dirt dirt-4\|dirt dirt-5\|dirt dirt-6\|dirt a-speedway\|oval b-speedway\|oval c-speedway\|oval d-speedway\|oval e-speedway\|oval f-speedway\|oval g-speedway\|oval michigan\|oval mixed-1\|dirt mixed-2\|dirt ruudskogen\|road g-track-1\|road alpine-1\|road alpine-2\|road brondehach\|road corkscrew\|road e-track-2\|road e-track-3\|road e-track-3\|road forza\|road g-track-2\|road g-track-3\|road ole-road-1\|road ruudskogen\|road spring\|road street-1\|road wheel-1\|road wheel-2\|road )
+ 1356  or i in "${arr[@]}"; do python start_script.py --conf config/config_data_agg.yaml --track $i; done
+ 1357  for i in "${arr[@]}"; do python start_script.py --conf config/config_data_agg.yaml --track $i; done
+ 1358  torcs
+ 1359  htop
+ 1360  sudo apt-get purge vim
+ 1361  sudo killall pdflatex 
+ 1362  watch -n 1 nvidia-smi
+ 1363  sudo dpkg -i teamviewer_13.0.5693_amd64.deb 
+ 1364  dpkg --remove teamviewer 
+ 1365  sudo dpkg --remove teamviewer 
+ 1366  sudo dpkg --purge teamviewer 
+ 1367  exit
+ 1368  pip install gpustat
+ 1369  watch -n 0 nvidia-smi
+ 1370  torcs
+ 1371  htop
+ 1372  cd ..
+ 1373  python run.py
+ 1374  python run.py -p 3002
+ 1375  python run.py -p 3003
+ 1376  ./start.sh -p 3004
+ 1377  python run.py -p 3003
+ 1378  python run.py -p 3002
+ 1379  python run.py -p 3003
+ 1380  python run.py -p 3002
+ 1381  torcs
+ 1382  ./start.sh
+ 1383  torcs
+ 1384  ./start.sh -p 3022
+ 1385  ./start.sh -p 3002
+ 1386  ./start.sh
+ 1387  ./start.sh =p 3001
+ 1388  ./start.sh -p 3002
+ 1389  ./start.sh
+ 1390  ./start.sh -p 3001
+ 1391  ./run.py 
+ 1392  python run.py 
+ 1393  htop
+ 1394  python
+ 1395  cd Documents/torcs-server/torcs-client/
+ 1396  python run.py -p 3001
+ 1397  python run.py -p 3002
+ 1398  cd Documents/torcs-server/
+ 1399  cd torcs-client/
+ 1400  python  converter.py pre_train/models/mod_temporal_torch_3
+ 1401  python  converter.py --file  pre_train/models/mod_temporal_torch_3
+ 1402  python  converter.py --file  pre_train/models/mod_temporal_torch_3.old_pytorchcd\  
+ 1403  torcs
+ 1404  ./run.py 
+ 1405  python run.py 
+ 1406  ./start.sh
+ 1407  cd ..
+ 1408  cd ~
+ 1409  cd Downloads/
+ 1410  cd Telegram \\\\
+ 1411  cd ..
+ 1412  ./start.sh 
+ 1413  cd torcs-1.3.7-patched/
+ 1414  bash reinstall 
+ 1415  cd Documents/torcs-server/torcs-client/
+ 1416  ./run.py 
+ 1417  python run.py 
+ 1418  python converter.py pre_train/models/mod_temporal_torch_3_super
+ 1419  python converter.py -f pre_train/models/mod_temporal_torch_3_super
+ 1420  python run.py 
+ 1421  [A
+ 1422  python run.py 
+ 1423  torcs
+ 1424  ls
+ 1425  rm dummy/
+ 1426  rm -f dummy/
+ 1427  rm -fr dummy/
+ 1428  ls
+ 1429  git add --all
+ 1430  git status
+ 1431  git commit -m 'add gradient multipliers''
+ 1432  git commit -m 'add gradient multipliers'
+ 1433  git push
+ 1434  gedit .gitignore 
+ 1435  git add --all
+ 1436  git status
+ 1437  git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch results/' 
+ 1438  git commit -m 'moved chechpoints'
+ 1439  git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch results/' 
+ 1440  git push
+ 1441  git fetch
+ 1442  git pulll --rebase
+ 1443  git pull --rebase
+ 1444  git status
+ 1445  rm clean_code/cap_*
+ 1446  ls
+ 1447  ls clean_code/
+ 1448  git statsh save 'backup'
+ 1449  git stash save 'backup'
+ 1450  git pull --rebase origin master
+ 1451  ls
+ 1452  cd clean_code/
+ 1453  ls
+ 1454  cd ..
+ 1455  python clean_code/main.py --onlybin True --captions False --augment True --epochs 2
+ 1456  python clean_code/main.py --onlybin False --captions True --augment False --epochs 2
+ 1457  gedit .gitignore 
+ 1458  htop 
+ 1459  cd Documents/nlp-information-retrieval/
+ 1460  python clean_code/main.py --onlybin False --captions True --augment False --epochs 2 --cosine False
+ 1461  python clean_code/main.py --onlybin True --captions True --augment True --epochs 2 --cosine False
+ 1462  bash experiments.sh 
+ 1463  chmod u+x experiments.sh
+ 1464  ./experiments.sh
+ 1465  bash experiments.sh
+ 1466  ls
+ 1467  sudo apt-get install gzip
+ 1468  man gzip
+ 1469  gzip -D vqa_*
+ 1470  man gzip
+ 1471  gzip -d vqa_annotatons_valid.gz 
+ 1472  gzip -d vqa_*
+ 1473  conda -l
+ 1474  conda list
+ 1475  ifconfig 
+ 1476  git add --al
+ 1477  git add --all
+ 1478  git status
+ 1479  git commit -m 'add test check'
+ 1480  git push origin master
+ 1481  git pull
+ 1482  git push
+ 1483  git status
+ 1484  git add clean_code/main.py clean_code/model/train.py clean_code/model/test.py 
+ 1485  git status
+ 1486  git commint -m 'add hard validation test'
+ 1487  git commit -m 'add hard validation test'
+ 1488  git push origin master
+ 1489  ./experiments.sh 
+ 1490  bash experiments.sh 
+ 1491  cat experiments.sh 
+ 1492  cuda uninstall pytorch
+ 1493  conda uninstall pytorch
+ 1494  conda list
+ 1495  conda install pytorch torchvision -c pytorch
+ 1496  cuda uninstall pytorch
+ 1497  conda uninstall pytorch
+ 1498  nvcc --version
+ 1499  apt purge cuda
+ 1500  sudo apt purge cuda
+ 1501  sudo /usr/local/cuda-8.0/bin/uninstall_cuda_8.0.pl 
+ 1502  sudo dkpg -i cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb 
+ 1503  sudo dpkg -i cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb 
+ 1504  sudo apt-key add /var/cuda-repo-9-1-local/7fa2af80.pub 
+ 1505  sudo apt-get update
+ 1506  sudo apt-get install cuda
+ 1507  conda install pytorch torchvision cuda90 -c pytorch
+ 1508  python
+ 1509  cd Documents/nlp-information-retrieval/
+ 1510  ./experiments.sh 
+ 1511  cd Documents/nlp-information-retrieval/
+ 1512  ./experiments.sh 
+ 1513  nvidia-smi
+ 1514  ./experiments.sh 
+ 1515  sudo rm -rf ~/.nv
+ 1516  ./experiments.sh 
+ 1517  bash remove_pkl_files.sh 
+ 1518  cd Documents/nlp-information-retrieval/
+ 1519  git pull
+ 1520  git fetch
+ 1521  git add --all
+ 1522  git commit
+ 1523  git commit -m 'add img layers'
+ 1524  git pull
+ 1525  ./experiments.sh 
+ 1526  ./remove_pkl_files.sh 
+ 1527  ./experiments.sh 
+ 1528  git commit -m 'add img layers'
+ 1529  git pull
+ 1530  git pull --rebase
+ 1531  git commit -m 'add img layers'
+ 1532  git add --all
+ 1533  git commit -m 'add img layers'
+ 1534  git pull --rebase
+ 1535  git rebase --continue
+ 1536  git rebase --abort
+ 1537  git pull
+ 1538  git add --all\
+ 1539  git add --all
+ 1540  git commit -am 'resolve merge conflicts'
+ 1541  git push
+ 1542  git pull --rebase origin master
+ 1543  ./experiments.sh 
+ 1544  ./remove_pkl_files.sh 
+ 1545  ./experiments.sh 
+ 1546  nvidia-smi 
+ 1547  cd Documents/nlp-information-retrieval/
+ 1548  htop
+ 1549  htop -d 0.01
+ 1550  htop -d 0.5
+ 1551  cd Documents/nlp-information-retrieval/
+ 1552  ./experiments.sh 
+ 1553  ./remove_pkl_files.sh 
+ 1554  ./experiments.sh cd ..
+ 1555  cd ..
+ 1556  git clone https://github.com/AashishV/NLP1_IR.git
+ 1557  cd NLP1_IR/
+ 1558  ls
+ 1559  cd Data/
+ 1560  ls
+ 1561  cd Easy/
+ 1562  ls
+ 1563  cd ..
+ 1564  cd ../../
+ 1565  cd nlp-information-retrieval/
+ 1566  ./remove_pkl_files.sh 
+ 1567  ./experiments.sh 
+ 1568  ./remove_pkl_files.sh 
+ 1569  ./experiments.sh 
+ 1570  cd data/
+ 1571  cd text_data/Easy/
+ 1572  ls
+ 1573  python
+ 1574  cd ../../all_non_aug_cap_cosine_simple/
+ 1575  ls
+ 1576  python
+ 1577  cd ../../
+ 1578  ./experiments.sh 
+ 1579  cd ../../
+ 1580  cd Documents/nlp-information-retrieval/
+ 1581  ./experiments.sh 
+ 1582  git add --all
+ 1583  git status
+ 1584  git commit -m 'fix cublas bug'
+ 1585  git push origin master
+ 1586  ./experiments.sh 
+ 1587  git add --all
+ 1588  git commit -m 'removed prints'
+ 1589  git push origin master
+ 1590  git add --all
+ 1591  git commit -m 'fixed start script'
+ 1592  git push origin master
+ 1593  chmod 644 ~/path/to/GABRIELE-AWS.pem
+ 1594  chmod 644 GABRIELE-AWS.pem
+ 1595  export PDNS=ec2-54-205-105-192.compute-1.amazonaws.com
+ 1596  ssh -i GABRIELE-AWS.pem localhost ubuntu@$PDNS
+ 1597  echo $PDNS
+ 1598  ls
+ 1599  ssh -i /home/hiryugan/Documents/AWS\ stuff/GABRIELE-AWS.pem localhost ubuntu@$PDNS
+ 1600  ec2-54-205-105-192.compute-1.amazonaws.com
+ 1601  ssh -i ~/.ssh/GABRIELE-AWS.pem -R 52698:localhost:52698 ubuntu@$PDNS
+ 1602  scp -i GABRIELE-AWS.pem -r ubuntu@$PDNS:~/data.tar.gz .
+ 1603  chmod a-x GABRIELE-AWS.pem 
+ 1604  ls -al
+ 1605  chmod a-w -al
+ 1606  chmod a-w GABRIELE-AWS.pem 
+ 1607  scp -i GABRIELE-AWS.pem -r ubuntu@$PDNS:~/data.tar.gz .
+ 1608  chmod 400 GABRIELE-AWS.pem 
+ 1609  scp -i GABRIELE-AWS.pem -r ubuntu@$PDNS:~/data.tar.gz .
+ 1610  ls
+ 1611  cd Documents/AWS\ stuff/
+ 1612  ssh -i ~/path/to/your/GABRIELE-AWS.pem ubuntu@$PDNS -p 443
+ 1613  ssh -i GABRIELE-AWS.pem ubuntu@$PDNS -p 443
+ 1614  ssh -i GABRIELE-AWS.pem -R 52698:localhost:52698 ubuntu@$PDNS
+ 1615  python
+ 1616  nvidia-smi
+ 1617  htop
+ 1618  cd Documents/nlp-information-retrieval/
+ 1619  git add --all
+ 1620  git status
+ 1621  git commit -m 'add rnn1 projection'
+ 1622  git pull --rebase
+ 1623  git push origin master
+ 1624  git add --all
+ 1625  git status
+ 1626  git commit -m 'add merged questions'
+ 1627  git push
+ 1628  git status
+ 1629  git rebase --continue
+ 1630  git status
+ 1631  git log
+ 1632  git push
+ 1633  git pull --rebase
+ 1634  git add --all
+ 1635  git commit -m 'add tensor pad support'
+ 1636  git pull --rebase
+ 1637  ./experiments.sh 
+ 1638  htop
+ 1639  git add --all
+ 1640  ./experiments
+ 1641  ./experiments.sh 
+ 1642  git status
+ 1643  git commit -m 'add complete experiments'
+ 1644  git push 
+ 1645  git add --all
+ 1646  git status
+ 1647  git commit -m 'add list saving'
+ 1648  git push origin master 
+ 1649  git add --all
+ 1650  git commit -m 'fix experiments script'
+ 1651  git push
+ 1652  htop 
+ 1653  git add --all
+ 1654  git status
+ 1655  git commit -m 'fix rnn bug'
+ 1656  git push
+ 1657  git add --all
+ 1658  git status
+ 1659  git commit -m 'fixed test bugs'
+ 1660  git push origin master
+ 1661  git add --all
+ 1662  git commit -m 'modify warmup'
+ 1663  git push
+ 1664  git add --all
+ 1665  git status
+ 1666  git add --all
+ 1667  git commit -m 'change warmup'
+ 1668  git push
+ 1669  git add --all
+ 1670  git commit -m 'final script'
+ 1671  git pushg
+ 1672  git push
+ 1673  cd Documents/nlp-information-retrieval/
+ 1674  git add --all
+ 1675  git commit -m 'fix euclidean
+ 1676  '
+ 1677  git add --all
+ 1678  git commit\
+ 1679  git commit -m 'fix euclidean'
+ 1680  git push origin master
+ 1681  git add --all
+ 1682  git commit -m 'add sequential'
+ 1683  cd Documents/nlp-information-retrieval/
+ 1684  git add --all
+ 1685  git status
+ 1686  git commit -m 'add rnn2'
+ 1687  git push
+ 1688  git add --all
+ 1689  git commit -m 'fix comments'
+ 1690  git push
+ 1691  git add --all
+ 1692  git commit -m 'fix train'
+ 1693  git push
+ 1694  git add --all
+ 1695  git commit -m 'add hard experiments'
+ 1696  gedit .gitignore 
+ 1697  git add --all
+ 1698  git status
+ 1699  git commit -m 'remove plots'
+ 1700  git push
+ 1701  git status
+ 1702  git rm -r --cached .
+ 1703  git add --all
+ 1704  git status
+ 1705  git commit -am 'remove ignored files'
+ 1706  git push
+ 1707  gedit .gitignore 
+ 1708  git add --all
+ 1709  git rm --cached -r .
+ 1710  git add --all
+ 1711  git status
+ 1712  git commit -am 'remove plots archive'
+ 1713  git push
+ 1714  git add --all
+ 1715  git commit -m 'add rnn2 experiment'
+ 1716  git push
+ 1717  git fetch
+ 1718  git pull --rebase 
+ 1719  git push
+ 1720  git add --all
+ 1721  git commit -m 'add more rnn2 experiments'
+ 1722  git push origin master
+ 1723  git add --all
+ 1724  git commit -m 'fix learning rate arg'
+ 1725  git push
+ 1726  git fetch
+ 1727  git pull --rebase
+ 1728  git add --all
+ 1729  git commit -m 'add complexity uid'
+ 1730  git push origin master
+ 1731  cd Documents/nlp-information-retrieval/
+ 1732  git add --all
+ 1733  git commit -m 'add transform similarity'
+ 1734  git push
+ 1735  git add --all
+ 1736  git commit -m 'add old cosine'
+ 1737  git push 
+ 1738  git fetch
+ 1739  git pull --rebase
+ 1740  git push
+ 1741  git add --all
+ 1742  git commit -m ''
+ 1743  git commit -m 'add back support'
+ 1744  git push
+ 1745  python calculate_test.py 
+ 1746  git add --all
+ 1747  git commit -am 'add test framework'
+ 1748  git push
+ 1749  python
+ 1750  man sync
+ 1751  sudo dd if=ubuntu-16.04.3-desktop-amd64.iso of=/dev/sdb bs=4M
+ 1752  sync
+ 1753  ifconfig 
+ 1754  python
+ 1755  conda search python
+ 1756  conda list
+ 1757  sudo killall bash
+ 1758  sudo killall sh
+ 1759  sync
+ 1760  cd Downloads/
+ 1761  cp cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb /media/hiryugan/48EE-A29B/repo1
+ 1762  man cp
+ 1763  md5sum we 
+ 1764  cd Downloads/
+ 1765  ls
+ 1766  sudo dd if=cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb of=/dev/sdb1/ciao.deb bs=4M
+ 1767  sudo dd if=cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb of=/dev/sdb1/ciao bs=4M
+ 1768  sudo dd if=cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb of=/dev/sdb/ciao bs=4M
+ 1769  sudo dd if=cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb of=/media/hiryugan/B26B-06C8/ bs=4M
+ 1770  sudo dd if=cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb of=/media/hiryugan/B26B-06C8 bs=4M
+ 1771  sudo dd if=cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb of=/media/hiryugan/B26B-06C8/we bs=4M
+ 1772  bash experiments.sh 
+ 1773  ifconfig 
+ 1774  sudo dpkg -i mendeleydesktop_1.17.12-stable_amd64.deb 
+ 1775  sudo apt-get update
+ 1776  sudo apt-get install mendeleydesktop 
+ 1777  mendeleydesktop 
+ 1778  ssh 192.168.1.233
+ 1779  bash experiments.sh 
+ 1780  ssh System-Product-Name
+ 1781  ssh hiryugan-System-Product-Name
+ 1782  ssh Hiryugan-System-Product-Name
+ 1783  ssh 192.168.1.233
+ 1784  bash experiments.sh 
+ 1785  sudo nvprof
+ 1786  bash experiments.sh 
+ 1787  htop
+ 1788  bash experiments.sh 
+ 1789  python nvplot.py 
+ 1790  bash experiments.sh 
+ 1791  python nvplot.py 
+ 1792  bash experiments.sh 
+ 1793  python nvplot.py 
+ 1794  bash experiments.sh 
+ 1795  python nvplot.py > ciao
+ 1796  htop
+ 1797  watch -n 0 nvidia-smi
+ 1798  cd Documents/
+ 1799  ls
+ 1800  cd nlp-information-retrieval/
+ 1801  bash experiments.sh 
+ 1802  hls
+ 1803  ls
+ 1804  python nvplot.py 
+ 1805  ls
+ 1806  bash experiments.sh 
+ 1807  python nvplot.py 
+ 1808  bash experiments.sh 
+ 1809  python nvplot.py 
+ 1810  bash experiments.sh 
+ 1811  python nvplot.py 
+ 1812  bash experiments.sh 
+ 1813  python nvplot.py 
+ 1814  bash experiments.sh 
+ 1815  python nvplot.py 
+ 1816  bash experiments.sh 
+ 1817  python nvplot.py 
+ 1818  bash experiments.sh 
+ 1819  python nvplot.py 
+ 1820  bash experiments.sh 
+ 1821  python nvplot.py 
+ 1822  bash experiments.sh 
+ 1823  python nvplot.py 
+ 1824  bash experiments.sh 
+ 1825  python nvplot.py 
+ 1826  bash experiments.sh 
+ 1827  python nvplot.py 
+ 1828  bash experiments.sh 
+ 1829  bash kernexp.sh 
+ 1830  python -m line_profiler main.py.lprof 
+ 1831  htop
+ 1832  cd Documents/torcs-server/torcs-client/
+ 1833  python run.py 
+ 1834  torcs
+ 1835  git clone https://github.com/timbmg/ivd
+ 1836  ssh 192.168.1.233
+ 1837  ifconfig 
+ 1838  ping 95.247.42.136
+ 1839  traceroute6 95.247.42.136
+ 1840  ping wewe.dynu.net
+ 1841  man ssh
+ 1842  ssh hiryi
+ 1843  ssh hiryupc.ddns.net
+ 1844  ssh 192.168.1.233
+ 1845  ssh -t 192.168.1.233
+ 1846  man ssh
+ 1847  ssh -p 22 hiryupc.ddns.net
+ 1848  man ping
+ 1849  ping hiryupc.ddns.net
+ 1850  ssh 95.235.46.100
+ 1851  ssh -p 20 95.235.46.100
+ 1852  ssh -p 22 95.235.46.100
+ 1853  ping 95.235.46.100
+ 1854  ssh ububububu.ddns.net
+ 1855  ssh ububububu.hopto.org
+ 1856  ssh -p 63233 ububububu.hopto.org
+ 1857  gcc -v
+ 1858  sudo apt-get update
+ 1859  sudo apt-get upgrade
+ 1860  conda create -n ir_env python=3.5
+ 1861  gcc -v
+ 1862  source activate ~/anaconda3/envs/ir_env/bin/python3
+ 1863  source activate ~/anaconda3/envs/ir_env/bin/python
+ 1864  ls ~/anaconda3/envs/ir_env/bin/python
+ 1865  ls ~/anaconda3/envs/ir_env/bin/
+ 1866  ls ~/anaconda3/envs/ir_env/bin/python
+ 1867  source activate ~/anaconda3/envs/ir_env/bin/python3.5
+ 1868  conda -v
+ 1869  conda -V
+ 1870  source ~/anaconda3/bin/activate ~/anaconda3/envs/ir_env/bin/python
+ 1871  conda remove -n ~/anaconda3/envs/ir_env/ -all
+ 1872  conda remove -n ~/anaconda3/envs/ir_env/ --all
+ 1873  source ~/anaconda3/bin/activate ~/anaconda3/envs/ir_env/bin/python
+ 1874  source activate ~/anaconda3/envs/ir_env/bin/python3.5
+ 1875  source activate ~/anaconda3/envs/ir_env/bin/pyvenv
+ 1876  conda remove -n ~/anaconda3/envs/ir_env/bin/pyvenv
+ 1877  conda env remove --name ~/anaconda3/envs/ir_env/bin/pyvenv
+ 1878  conda env remove --name ~/anaconda3/envs/ir_env/bin/python
+ 1879  conda info
+ 1880  conda info --envs
+ 1881  cd /home/hiryugan/anaconda3/envs/ir_env/
+ 1882  ls
+ 1883  cd bin/
+ 1884  ls
+ 1885  activate python
+ 1886  source activate python
+ 1887  cd ..
+ 1888  source activate ir_env/
+ 1889  exit
+ 1890  cd anaconda3/
+ 1891  ls
+ 1892  cd ..
+ 1893  ls
+ 1894  conda --envs
+ 1895  conda envs
+ 1896  conda info --envs
+ 1897  ln -s /home/hiryugan/anaconda3/envs/ir_env/ /home/hiryugan/ir_env
+ 1898  source activate ir_env
+ 1899  source deactivate ir_env
+ 1900  source activate ~/anaconda3/envs/ir_env/
+ 1901  sudo apt install g++ zlib1g-dev 
+ 1902  sudo apt autoremove 
+ 1903  which pip3
+ 1904  which pip
+ 1905  sudo pip install setuptools
+ 1906  sudo ~/anaconda3/envs/ir_env/bin/pip install setuptools
+ 1907  cd Documents/
+ 1908  ls
+ 1909  wget https://sourceforge.net/projects/lemur/files/lemur/indri-5.11/indri-5.11.tar.gz/download
+ 1910  ls
+ 1911  lsn download 
+ 1912  la -al
+ 1913  ls -al
+ 1914  wget https://sourceforge.net/projects/lemur/files/lemur/indri-5.11/indri-5.11.tar.gz
+ 1915  tar zxvf indri-5.11.tar.gz 
+ 1916  cd indri-5.11.tar.gz
+ 1917  cd indri-5.11/
+ 1918  ./configure CXX="g++ -D_GLIBCXX_USE_CXX11_ABI=0"
+ 1919  make
+ 1920  sudo make install
+ 1921  sudo pip install pyndri
+ 1922  sudo ~/ir_env/bin/pip install pyndri
+ 1923  cd ..
+ 1924  cd exx/
+ 1925  ls
+ 1926  python3 Untitled\ Document
+ 1927  python
+ 1928  cd ..
+ 1929  ls indri-5.11/runquery/
+ 1930  cd indri-5.11/runquery/
+ 1931  python IndriRunQuery
+ 1932  which python
+ 1933  python
+ 1934  gcc -v
+ 1935  g++
+ 1936  g++ -v
+ 1937  conda 
+ 1938  conda list
+ 1939  conda install libgcc-ng=5
+ 1940  conda install libgcc-ng=5.1
+ 1941  conda install libgcc-ng=*
+ 1942  source activate ir_env
+ 1943  python Un
+ 1944  python Un*
+ 1945  conda list -v
+ 1946  conda remove -n ir_env
+ 1947  source activate ir_env
+ 1948  conda install anaconda
+ 1949  sudo apt-get install gcc-5 g++5
+ 1950  sudo update-alternatives --list
+ 1951  sudo update-alternatives
+ 1952  sudo update-alternatives --get-selections
+ 1953  sudo update-alternatives --get-selections gcc
+ 1954  sudo update-alternatives --get-selections g+
+ 1955  sudo update-alternatives --get-selections g++
+ 1956  man update-alternatives 
+ 1957  man update-alternatives --list gcc
+ 1958  man update-alternatives --list g++
+ 1959  gcc -v
+ 1960  sudo apt-get install gcc-5 g++-5
+ 1961  cd Documents/
+ 1962  ls
+ 1963  cd indri-5.11/
+ 1964  ls
+ 1965  ./configure CXX="g++ -D_GLIBCXX_USE_CXX11_ABI=0"
+ 1966  make -j 4
+ 1967  sudo make install
+ 1968  cd ..
+ 1969  ls
+ 1970  cd exx/
+ 1971  l
+ 1972  gedit Untitled\ Document 
+ 1973  python Untitled\ Document
+ 1974  ls
+ 1975  cd ..
+ 1976  ls
+ 1977  cd indri-5.11/
+ 1978  ls
+ 1979  python
+ 1980  git checkout classification
+ 1981  git status
+ 1982  git fetch
+ 1983  git status
+ 1984  git checkout classification
+ 1985  git pull --rebase
+ 1986  git commit -m 'last local'
+ 1987  git pull --rebase
+ 1988  git pull --rebase master classification
+ 1989  git reset --hard
+ 1990  git pull --rebase master classification
+ 1991  git checkout classification
+ 1992  git pull --rebase
+ 1993  update-alternatives --list python
+ 1994  readlink python
+ 1995  which python
+ 1996  nvidia-smi 
+ 1997  watch -n 1 nvidia-smi 
+ 1998  cd Documents/
+ 1999  ls
+ 2000  cd nlp-information-retrieval/
+ 2001  kernprof -l main.py --onlybin True --captions False --augment False --epochs 50 --cosine True --projection RNN1 --concat False --sequential False --batch_size 256 --test_batch_size 8  --lr 0.001 --negbackprop False
+ 2002  kernprof -l clean_code/main.py --onlybin True --captions False --augment False --epochs 50 --cosine True --projection RNN1 --concat False --sequential False --batch_size 256 --test_batch_size 8  --lr 0.001 --negbackprop False
+ 2003  python -m line_profiler > fast
+ 2004  python -m line_profiler main.py.lprof > fast
+ 2005  gedit fast 
+ 2006  history > hi

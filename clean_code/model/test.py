@@ -80,6 +80,7 @@ def test(model, rnn2, image_layer, loader, config):
                 #     scores = (1 / img_prediction.size(1)) * (xp[total_idx:total_idx+size, i*10:i*10+10]).sum(0).data
                     scores = (xp[total_idx:total_idx+size, i*10:i*10+10]).sum(0).data
             target = target.squeeze()
+            # scores = (1+scores) / 2
             test_loss += scores[target.data[i]]
             top1 += 1 if target.data[i] in scores.topk(1, largest=False)[1] else 0
             top3 += 1 if target.data[i] in scores.topk(3, largest=False)[1] else 0
